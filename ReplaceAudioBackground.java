@@ -3,13 +3,15 @@ package mediaPlayer;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
-class ExtractAudioBackground extends SwingWorker<Integer, Integer> {
+class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 	private int status;
-	private String originURL;
+	private String originVideo;
+	private String originAudio;
 	private String destURL;
 
-	public ExtractAudioBackground(String originURL,String destURL) {
-		this.originURL = originURL;
+	public ReplaceAudioBackground(String originVideo,String originAudio,String destURL) {
+		this.originVideo = originVideo;
+		this.originAudio = originAudio;
 		this.destURL = destURL;
 	}
 

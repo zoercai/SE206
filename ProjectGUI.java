@@ -185,19 +185,65 @@ public class ProjectGUI {
 		strip.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setFileFilter(new FileNameExtensionFilter(".mp3","MP3 audio format"));
-				fileChooser.showSaveDialog(null);
-				File file = fileChooser.getSelectedFile();
-				if(!file.getName().endsWith(".mp3"))
-				{
-				    file = new File(file.getAbsoluteFile() + ".mp3");
+				//Open file to be extracted
+				JFileChooser fileOpener = new JFileChooser();
+				fileOpener.showDialog(null,"Choose video file to be extracted");
+				File sourcefile = fileOpener.getSelectedFile();
+				
+				//Choose location and name for audio file
+				JFileChooser fileSaver = new JFileChooser();
+				fileSaver.setFileFilter(new FileNameExtensionFilter(".mp3","MP3 audio format"));
+				fileSaver.showDialog(null,"Name output audio file");
+				File file = fileSaver.getSelectedFile();
+				
+				//If both are correctly set, extract.
+				if ((sourcefile!=null) && (file!=null)){
+					if(!file.getName().endsWith(".mp3"))
+					{
+					    file = new File(file.getAbsoluteFile() + ".mp3");
+					}
+					ExtractAudioBackground extract = new ExtractAudioBackground(sourcefile.getAbsolutePath(),file.getAbsolutePath());
+				extract.execute();		
+				}else{
+					JOptionPane.showMessageDialog(null, "File not extracted. Please specify both files correctly!");
 				}
-				//TODO make origin file chooser;
-				ExtractAudioBackground extract = new ExtractAudioBackground("/home/zoe/Videos/big_buck_bunny_480p_surround-fix.avi",file.getAbsolutePath());
-				System.out.println(file.getAbsolutePath());
-				extract.execute();					
+							
 			}
+		});
+		
+		replace.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				//Open video file to be extracted
+				JFileChooser videoOpener = new JFileChooser();
+				videoOpener.showDialog(null,"Choose video file to be extracted");
+				File sourceVideo = videoOpener.getSelectedFile();
+				
+				//Open audio file to be extracted
+				JFileChooser audioOpener = new JFileChooser();
+				audioOpener.showDialog(null,"Choose video file to be extracted");
+				File sourceAudio = videoOpener.getSelectedFile();
+				
+				//Choose location and name for output video file
+				JFileChooser videoSaver = new JFileChooser();
+				videoSaver.setFileFilter(new FileNameExtensionFilter(".avi","AVI audio format"));
+				videoSaver.showDialog(null,"Name output audio file");
+				File file = videoSaver.getSelectedFile();
+				
+				//If both are correctly set, extract.
+				if ((sourceVideo!=null) && (file!=null) && (sourceAudio!=null)){
+					if(!file.getName().endsWith(".avi"))
+					{
+					    file = new File(file.getAbsoluteFile() + ".avi");
+					}
+					ReplaceAudioBackground replace = new ReplaceAudioBackground(sourceVideo.getAbsolutePath(),sourceAudio.getAbsolutePath(),file.getAbsolutePath());
+				replace.execute();		
+				}else{
+					JOptionPane.showMessageDialog(null, "File not extracted. Please specify both files correctly!");
+				}
+			}
+			
 		});
 
 		play.addActionListener(new playListener());
