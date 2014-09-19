@@ -222,7 +222,7 @@ public class ProjectGUI {
 				
 				//Open audio file to be extracted
 				JFileChooser audioOpener = new JFileChooser();
-				audioOpener.showDialog(null,"Choose video file to be extracted");
+				audioOpener.showDialog(null,"Choose audio file to be extracted");
 				File sourceAudio = videoOpener.getSelectedFile();
 				
 				//Choose location and name for output video file

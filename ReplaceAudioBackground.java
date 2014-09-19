@@ -40,7 +40,10 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 							JOptionPane.QUESTION_MESSAGE, null, confirm,
 							confirm[1]);
 			if (a == JOptionPane.YES_OPTION) { // override
-				String avconvCmd = "avconv -y -i " + originURL + " -vn " + destURL;
+				
+				//ffmpeg -i video.avi -i audio.mp3 -map 0 -map 1 -codec copy -shortest output_video.avi
+				
+				String avconvCmd = "avconv -y -i "+originVideo + " -i "+originAudio + " -c:v copy -map 0:0 -map 1:0 -codec copy " + destURL;
 				ProcessBuilder avconvBuilder = new ProcessBuilder("bash", "-c",
 						avconvCmd);
 				avconvBuilder.redirectErrorStream(true);
@@ -58,12 +61,12 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 				JOptionPane
 						.showMessageDialog(
 								null,
-								"Error! Extraction was not successful. Please check output file name and make sure it contains the appropriate extension.");
+								"Error! Relace was not successful. Please check output file name and make sure it contains the appropriate extension.");
 			}
 
 		} else { // file doesn't exist
 			// avconv it
-			String avconvCmd = "avconv -i " + originURL + " -vn " + destURL;
+			String avconvCmd = "avconv -i "+ originVideo + " -i "+originAudio + " -c:v copy -map 0:0 -map 1:0 -codec copy " + destURL;
 			ProcessBuilder avconvBuilder = new ProcessBuilder("bash", "-c",
 					avconvCmd);
 			avconvBuilder.redirectErrorStream(true);
@@ -76,7 +79,7 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 				JOptionPane
 						.showMessageDialog(
 								null,
-								"Error! Extraction was not successful. Please check output file name and make sure it contains the appropriate extension.");
+								"Error! Replace was not successful. Please check output file name and make sure it contains the appropriate extension.");
 			} else {
 				// checkLog("EXTRACT");
 			}
@@ -88,9 +91,9 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 	@Override
 	protected void done() {
 		if (!this.isCancelled()) {
-			JOptionPane.showMessageDialog(null, "Extract completed!");
+			JOptionPane.showMessageDialog(null, "Replace completed!");
 		} else if (this.isCancelled()) {
-			JOptionPane.showMessageDialog(null, "Extract not completed.");
+			JOptionPane.showMessageDialog(null, "Replace not completed.");
 		}
 		// progressBar.setValue(0);
 		// progressBar.setStringPainted(false);
