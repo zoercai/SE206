@@ -41,11 +41,12 @@ public class ProjectGUI {
 	 * 
 	 * Need to make the transition between fast forward and rewind more seamless
 	 * if play is not first used to stop it.
+	 * 
+	 * Subtitle class - Don't do it in here :)
 	 */
 
 	private final EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-	private final EmbeddedMediaPlayer video = mediaPlayerComponent
-			.getMediaPlayer();
+	private final EmbeddedMediaPlayer video = mediaPlayerComponent.getMediaPlayer();
 
 	JPanel main = new JPanel(new BorderLayout());
 	private JMenuBar menu = new JMenuBar();
@@ -91,11 +92,12 @@ public class ProjectGUI {
 	private JButton back = new JButton("Rewind");
 
 	boolean paused = false;
-	boolean endofvideo = false;
 	boolean goforward = false;
+	boolean endofvideo = false;
 	boolean gobackward = false;
 
 	String videoLocation = "";
+	String saveLocation = "";
 
 	private ProjectGUI(String[] args) {
 		JFrame frame = new JFrame("Lysandros Media Player");
@@ -169,8 +171,15 @@ public class ProjectGUI {
 				if (URL == null) {
 					// do nothing
 				} else {
-					DownloadBackground download = new DownloadBackground(URL);
+					JFileChooser fileOpener = new JFileChooser();
+					File ourFile;
+					fileOpener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					fileOpener.showSaveDialog(null);
+					ourFile = fileOpener.getSelectedFile();
+					saveLocation = ourFile.getAbsolutePath();
+					DownloadBackground download = new DownloadBackground(URL,saveLocation);
 					download.execute();
+
 				}
 			}
 		});
@@ -267,6 +276,7 @@ public class ProjectGUI {
 				video.toggleFullScreen();
 				boolean h = video.isFullScreen();
 				System.out.println(h);
+//				video.setSubTitleFile("/home/genevieve/sub.txt");  //TODO
 			}
 		});
 	}
@@ -277,7 +287,7 @@ public class ProjectGUI {
 		@Override
 		protected Void doInBackground() throws Exception {
 			while (goforward == true) {
-				video.skip(00100);
+				video.skip(0010);
 			}
 			while (gobackward == true) {
 				video.skip(-0010);
@@ -378,15 +388,17 @@ public class ProjectGUI {
 				goforward = false;
 			} else if (gobackward == true) {
 				gobackward = false;
-			} else if (endofvideo) {
+			} else if (endofvideo == true) {
 				endofvideo = false;
 				VideoPlayer video = new VideoPlayer();
 				video.execute();
-			} else {
-				// play.setName("Play"); => Not working yet, maybe just stick to
-				// 2 separate buttons for now
+			} else if (paused == true){
 				paused = false;
 				video.play();
+			}
+			else {
+				paused = true;
+				video.pause();
 			}
 		}
 	}

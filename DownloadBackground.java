@@ -12,10 +12,12 @@ import javax.swing.SwingWorker;
 public class DownloadBackground extends SwingWorker<Integer, Integer> {
 
 	private String url;
+	private String saveLocation;
 	private int status;
 
-	public DownloadBackground(String url) {
+	public DownloadBackground(String url, String saveLocation) {
 		this.url = url;
+		this.saveLocation = saveLocation;
 	}
 
 	@Override
@@ -33,7 +35,7 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 			if (n == JOptionPane.YES_OPTION) {
 				String baseNameCmd = "basename " + url;
 				ProcessBuilder baseNameBuilder = new ProcessBuilder("bash",
-						"-c", baseNameCmd);
+						"-c",baseNameCmd);
 				baseNameBuilder.redirectErrorStream(true);
 				Process baseNameProcess = baseNameBuilder.start();
 				BufferedReader stdoutBase = new BufferedReader(
@@ -63,7 +65,8 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 									JOptionPane.QUESTION_MESSAGE, null,
 									options, options[2]);
 					if (a == JOptionPane.YES_OPTION) { // Override option
-						String ovrCmd = "wget --progress=dot " + url
+						String location = "-P" + saveLocation;
+						String ovrCmd = "wget " + location + " --progress=dot " + url 
 								+ " -O " + fileName;
 						ProcessBuilder ovrBuilder = new ProcessBuilder(
 								"bash", "-c", ovrCmd);
@@ -99,8 +102,9 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 						ovrProcess.getErrorStream().close();
 						ovrProcess.destroy();
 					} else if (a == JOptionPane.NO_OPTION) { // resume
-																// option
-						String resCmd = "wget --progress=dot -c " + url;
+															// option
+						String location = "-P" + saveLocation;
+						String resCmd = "wget " + location + " --progress=dot -c " + url;
 						ProcessBuilder resBuilder = new ProcessBuilder(
 								"bash", "-c", resCmd);
 						resBuilder.redirectErrorStream(true);
@@ -136,8 +140,10 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 					} else {
 						this.cancel(true);
 					}
-				} else { // file doesn't exist, download
-					String dwnCmd = "wget --progress=dot " + url;
+				} else { // file doesn't exist, download 
+					String location = "-P" + saveLocation;
+					String dwnCmd = "wget " + location + " --progress=dot " + url;
+					System.out.println(location+ "\n"+dwnCmd);
 					ProcessBuilder downloadBuilder = new ProcessBuilder(
 							"bash", "-c", dwnCmd);
 					downloadBuilder.redirectErrorStream(true);
