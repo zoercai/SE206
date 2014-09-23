@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -168,20 +170,32 @@ public class ProjectGUI {
 			public void actionPerformed(ActionEvent e) {
 				String URL = JOptionPane
 						.showInputDialog("Please enter file URL: ");
-				if (URL == null) {
+				URL url;
+				
+				try {
+					url = new URL(URL);
+					
+					if (URL == null) {
 					// do nothing
 				} else {
-					JFileChooser fileOpener = new JFileChooser();
-					File ourFile;
-					fileOpener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-					fileOpener.showSaveDialog(null);
-					ourFile = fileOpener.getSelectedFile();
-					saveLocation = ourFile.getAbsolutePath();
+					JFileChooser fileSaver = new JFileChooser();
+					fileSaver.setSelectedFile(new File(url.getFile()));
+					fileSaver.showDialog(null,"Save");
+					File file = fileSaver.getSelectedFile();
+					
 					//TODO allow user to change file name, but default to original file name
-					DownloadBackground download = new DownloadBackground(URL,saveLocation);
+					DownloadBackground download = new DownloadBackground(URL,file.toString());
+					
 					download.execute();
 
 				}
+					
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
 			}
 		});
 

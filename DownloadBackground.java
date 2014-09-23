@@ -12,12 +12,12 @@ import javax.swing.SwingWorker;
 public class DownloadBackground extends SwingWorker<Integer, Integer> {
 
 	private String url;
-	private String saveLocation;
+	private String outputFile;
 	private int status;
 
-	public DownloadBackground(String url, String saveLocation) {
+	public DownloadBackground(String url, String outputFile) {
 		this.url = url;
-		this.saveLocation = saveLocation;
+		this.outputFile = outputFile;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 							JOptionPane.QUESTION_MESSAGE, null, confirm,
 							confirm[1]);
 			if (n == JOptionPane.YES_OPTION) {
-				String baseNameCmd = "basename " + url;
+				/*String baseNameCmd = "basename " + outputFile;
 				ProcessBuilder baseNameBuilder = new ProcessBuilder("bash",
 						"-c",baseNameCmd);
 				baseNameBuilder.redirectErrorStream(true);
@@ -41,8 +41,9 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 				BufferedReader stdoutBase = new BufferedReader(
 						new InputStreamReader(
 								baseNameProcess.getInputStream()));
-				String fileName = stdoutBase.readLine();
-				String chkFileExistsCmd = "test -e " + fileName;
+				String outputFile = stdoutBase.readLine();*/
+				String chkFileExistsCmd = "test -e " + outputFile;
+				System.out.println(chkFileExistsCmd);
 				ProcessBuilder checkFileBuilder = new ProcessBuilder(
 						"bash", "-c", chkFileExistsCmd);
 				checkFileBuilder.redirectErrorStream(true);
@@ -65,9 +66,8 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 									JOptionPane.QUESTION_MESSAGE, null,
 									options, options[2]);
 					if (a == JOptionPane.YES_OPTION) { // Override option
-						String location = "-P" + saveLocation;
-						String ovrCmd = "wget " + location + " --progress=dot " + url 
-								+ " -O " + fileName;
+						String ovrCmd = "wget " + " --progress=dot " + url 
+								+ " -O " + outputFile;
 						ProcessBuilder ovrBuilder = new ProcessBuilder(
 								"bash", "-c", ovrCmd);
 						ovrBuilder.redirectErrorStream(true);
@@ -103,8 +103,8 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 						ovrProcess.destroy();
 					} else if (a == JOptionPane.NO_OPTION) { // resume
 															// option
-						String location = "-P" + saveLocation;
-						String resCmd = "wget " + location + " --progress=dot -c " + url;
+						
+						String resCmd = "wget " + " --progress=dot -c " + url + " -O "+ outputFile;
 						ProcessBuilder resBuilder = new ProcessBuilder(
 								"bash", "-c", resCmd);
 						resBuilder.redirectErrorStream(true);
@@ -141,9 +141,9 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 						this.cancel(true);
 					}
 				} else { // file doesn't exist, download 
-					String location = "-P" + saveLocation;
-					String dwnCmd = "wget " + location + " --progress=dot " + url;
-					System.out.println(location+ "\n"+dwnCmd);
+					
+					String dwnCmd = "wget " + " --progress=dot " + url + " -O "+ outputFile;
+					
 					ProcessBuilder downloadBuilder = new ProcessBuilder(
 							"bash", "-c", dwnCmd);
 					downloadBuilder.redirectErrorStream(true);
