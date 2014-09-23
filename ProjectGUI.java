@@ -174,7 +174,6 @@ public class ProjectGUI {
 				
 				try {
 					url = new URL(URL);
-					
 					if (URL == null) {
 					// do nothing
 				} else {
@@ -182,16 +181,12 @@ public class ProjectGUI {
 					fileSaver.setSelectedFile(new File(url.getFile()));
 					fileSaver.showDialog(null,"Save");
 					File file = fileSaver.getSelectedFile();
-					
-					//TODO allow user to change file name, but default to original file name
 					DownloadBackground download = new DownloadBackground(URL,file.toString());
-					
 					download.execute();
 
 				}
 					
 				} catch (MalformedURLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
@@ -238,7 +233,7 @@ public class ProjectGUI {
 		replace.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				
 				//Open video file to be extracted
 				JFileChooser videoOpener = new JFileChooser();
 				videoOpener.showDialog(null,"Choose source video file");
@@ -274,7 +269,7 @@ public class ProjectGUI {
 		overlay.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				
 				//Open video file to be extracted
 				JFileChooser videoOpener = new JFileChooser();
 				videoOpener.showDialog(null,"Choose source video file");
@@ -366,7 +361,6 @@ public class ProjectGUI {
 			gobackward = false;
 			video.playMedia(videoLocation);
 			video.parseMedia();
-			//System.out.println(video.getMediaMeta().getLength());
 			int max = (int) video.getMediaMeta().getLength();
 			timeBar.setMaximum(max);
 			while (video.getTime() < max) {

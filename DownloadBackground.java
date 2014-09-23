@@ -33,17 +33,7 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 							JOptionPane.QUESTION_MESSAGE, null, confirm,
 							confirm[1]);
 			if (n == JOptionPane.YES_OPTION) {
-				/*String baseNameCmd = "basename " + outputFile;
-				ProcessBuilder baseNameBuilder = new ProcessBuilder("bash",
-						"-c",baseNameCmd);
-				baseNameBuilder.redirectErrorStream(true);
-				Process baseNameProcess = baseNameBuilder.start();
-				BufferedReader stdoutBase = new BufferedReader(
-						new InputStreamReader(
-								baseNameProcess.getInputStream()));
-				String outputFile = stdoutBase.readLine();*/
 				String chkFileExistsCmd = "test -e " + outputFile;
-				System.out.println(chkFileExistsCmd);
 				ProcessBuilder checkFileBuilder = new ProcessBuilder(
 						"bash", "-c", chkFileExistsCmd);
 				checkFileBuilder.redirectErrorStream(true);
@@ -77,7 +67,6 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 										ovrProcess.getInputStream()));
 						String line;
 						final AtomicInteger percent = new AtomicInteger();
-						// System.out.println(stdoutOverride.readLine());
 						while ((line = stdoutOverride.readLine()) != null
 								&& !isCancelled()) {
 							if (line.contains("%")) {
@@ -114,7 +103,6 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 										resProcess.getInputStream()));
 						String line;
 						final AtomicInteger percent = new AtomicInteger();
-						// System.out.println(stdoutDownload.readLine());
 						while ((line = stdoutDownload.readLine()) != null
 								&& !isCancelled()) {
 							if (line.contains("%")) {
