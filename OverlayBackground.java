@@ -3,13 +3,13 @@ package mediaPlayer;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
-class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
+class OverlayBackground extends SwingWorker<Integer, Integer> {
 	private int status;
 	private String originVideo;
 	private String originAudio;
 	private String destURL;
 
-	public ReplaceAudioBackground(String originVideo,String originAudio,String destURL) {
+	public OverlayBackground(String originVideo,String originAudio,String destURL) {
 		this.originVideo = originVideo;
 		this.originAudio = originAudio;
 		this.destURL = destURL;
@@ -18,9 +18,8 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 	@Override
 	protected Integer doInBackground() throws Exception {
 		
-		//TODO have a progress bar for extract in a dialog that can be minimized.
-		//TODO give warning if no audio signal.
-		//TODO if first dialogue is cancelled immediately cancel all.
+		//TODO have a progress bar for overlay in a dialog that can be minimized.
+		//TODO give warning if no audio signal. -> perhaps in main.
 		
 		String chkFileExistsCmd = "test -e " + destURL;
 		ProcessBuilder checkFileBuilder = new ProcessBuilder("bash", "-c",
@@ -41,7 +40,7 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 							JOptionPane.QUESTION_MESSAGE, null, confirm,
 							confirm[1]);
 			if (a == JOptionPane.YES_OPTION) { // override
-				String avconvCmd = "avconv -y -i "+originVideo+" -i "+originAudio+" -map 0:v -map 1:a -vcodec copy -acodec copy "+destURL;
+				String avconvCmd = "avconv -y -i "+originVideo+" -i "+originAudio+" -filter_complex amix=inputs=2 -crf 18 "+destURL;
 				ProcessBuilder avconvBuilder = new ProcessBuilder("bash", "-c",
 						avconvCmd);
 				avconvBuilder.redirectErrorStream(true);
@@ -59,12 +58,13 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 				JOptionPane
 						.showMessageDialog(
 								null,
-								"Error! Replace was not successful. Please check output file name and make sure it contains the appropriate extension.");
+								"Error! Overlay was not successful. Please check output file name and make sure it contains the appropriate extension.");
 			}
 
 		} else { // file doesn't exist
 			// avconv it
-			String avconvCmd = "avconv -i "+originVideo+" -i "+originAudio+" -map 0:v -map 1:a -vcodec copy -acodec copy "+destURL;
+			String avconvCmd = "avconv -i "+originVideo+" -i "+originAudio+" -filter_complex amix=inputs=2 -crf 18 "+destURL;
+			System.out.println(avconvCmd);
 			ProcessBuilder avconvBuilder = new ProcessBuilder("bash", "-c",
 					avconvCmd);
 			avconvBuilder.redirectErrorStream(true);
@@ -77,7 +77,7 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 				JOptionPane
 						.showMessageDialog(
 								null,
-								"Error! Replace was not successful. Please check output file name and make sure it contains the appropriate extension.");
+								"Error! Overlay was not successful. Please check output file name and make sure it contains the appropriate extension.");
 			} else {
 				// checkLog("EXTRACT");
 			}
@@ -89,9 +89,9 @@ class ReplaceAudioBackground extends SwingWorker<Integer, Integer> {
 	@Override
 	protected void done() {
 		if (!this.isCancelled()) {
-			JOptionPane.showMessageDialog(null, "Replace completed!");
+			JOptionPane.showMessageDialog(null, "Overlay completed!");
 		} else if (this.isCancelled()) {
-			JOptionPane.showMessageDialog(null, "Replace not completed.");
+			JOptionPane.showMessageDialog(null, "Overlay not completed.");
 		}
 		// progressBar.setValue(0);
 		// progressBar.setStringPainted(false);
