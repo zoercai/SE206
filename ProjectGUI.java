@@ -43,6 +43,10 @@ public class ProjectGUI {
 	 * if play is not first used to stop it.
 	 * 
 	 * Subtitle class - Don't do it in here :)
+	 * 
+	 * avconv -i TetrisGod.mp4 -strict experimental -vf
+	 * "drawtext=fontcolor=white:fontsize=30:fontfile=/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-L.ttf:text='Hi Zoe':x=30:y=h-text_h-30"
+	 * -crf 18 test.mp4
 	 */
 
 	private final EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
@@ -276,7 +280,6 @@ public class ProjectGUI {
 				video.toggleFullScreen();
 				boolean h = video.isFullScreen();
 				System.out.println(h);
-//				video.setSubTitleFile("/home/genevieve/sub.txt");  //TODO
 			}
 		});
 	}
