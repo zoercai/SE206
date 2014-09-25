@@ -1,5 +1,7 @@
 package mediaPlayer;
 
+import java.awt.Toolkit;
+import java.beans.PropertyChangeEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,13 +9,21 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
+import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
+
+import testing.ProgressMonitorDemo;
 
 public class DownloadBackground extends SwingWorker<Integer, Integer> {
 
 	private String url;
 	private String outputFile;
 	private int status;
+	
 
 	public DownloadBackground(String url, String outputFile) {
 		this.url = url;
@@ -33,7 +43,7 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 							JOptionPane.QUESTION_MESSAGE, null, confirm,
 							confirm[1]);
 			if (n == JOptionPane.YES_OPTION) {
-				String chkFileExistsCmd = "test -e " + outputFile;
+				String chkFileExistsCmd = "test -e " + outputFile;				
 				ProcessBuilder checkFileBuilder = new ProcessBuilder(
 						"bash", "-c", chkFileExistsCmd);
 				checkFileBuilder.redirectErrorStream(true);
@@ -62,6 +72,10 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 								"bash", "-c", ovrCmd);
 						ovrBuilder.redirectErrorStream(true);
 						Process ovrProcess = ovrBuilder.start();
+						
+						
+						
+						
 						BufferedReader stdoutOverride = new BufferedReader(
 								new InputStreamReader(
 										ovrProcess.getInputStream()));
@@ -74,6 +88,8 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 								publish(percent.get());
 							}
 						}
+						
+						
 						if (!isCancelled()) {
 							status = ovrProcess.waitFor();
 						}
@@ -82,9 +98,6 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 									.showMessageDialog(null,
 											"Error! Check your internet connection and that your URL is correct!");
 							this.cancel(true);
-						} else {
-							// checkLog("DOWNLOAD");
-
 						}
 						ovrProcess.getInputStream().close();
 						ovrProcess.getOutputStream().close();
@@ -118,8 +131,6 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 									.showMessageDialog(null,
 											"Error! Check your internet connection and that your URL is correct!");
 							this.cancel(true);
-						} else {
-							// checkLog("DOWNLOAD");
 						}
 						resProcess.getInputStream().close();
 						resProcess.getOutputStream().close();
@@ -131,7 +142,7 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 				} else { // file doesn't exist, download 
 					
 					String dwnCmd = "wget " + " --progress=dot " + url + " -O "+ outputFile;
-					
+					System.out.println(dwnCmd);
 					ProcessBuilder downloadBuilder = new ProcessBuilder(
 							"bash", "-c", dwnCmd);
 					downloadBuilder.redirectErrorStream(true);
@@ -157,8 +168,6 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 								.showMessageDialog(null,
 										"Error! Check your internet connection and that your URL is correct!");
 						this.cancel(true);
-					} else {
-						// checkLog("DOWNLOAD");
 					}
 					downloadProcess.getInputStream().close();
 					downloadProcess.getOutputStream().close();
@@ -178,6 +187,8 @@ public class DownloadBackground extends SwingWorker<Integer, Integer> {
 		return status;
 	}
 
+	
+	
 	@Override
 	protected void process(List<Integer> chunks) {
 		for (int percent : chunks) {
