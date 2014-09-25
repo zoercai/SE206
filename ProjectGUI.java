@@ -2,9 +2,13 @@ package mediaPlayer;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -17,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
@@ -25,7 +30,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
-public class ProjectGUI {
+public class ProjectGUI{
 
 	/*
 	 * TODO AKNOWLEDGE CODE FROM THE LETURE (AND HENCE THAT SITE) THE FILE
@@ -104,9 +109,12 @@ public class ProjectGUI {
 
 	String videoLocation = "";
 	String saveLocation = "";
+	
+	private ProgressMonitor progressMonitor;
+	private PrintStream taskOutput;
 
 	private ProjectGUI(String[] args) {
-		JFrame frame = new JFrame("Lysandros Media Player");
+		final JFrame frame = new JFrame("Lysandros Media Player");
 
 		main.add(menu, BorderLayout.NORTH);
 		main.add(bottom, BorderLayout.SOUTH);
@@ -172,32 +180,7 @@ public class ProjectGUI {
 		download.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String URL = JOptionPane
-						.showInputDialog("Please enter file URL: ");
-				URL url;
-				
-				try {
-					url = new URL(URL);
-					if (URL == null) {
-					// do nothing
-				} else {
-					JFileChooser fileSaver = new JFileChooser();
-					fileSaver.setSelectedFile(new File(url.getFile()));
-					fileSaver.showDialog(null,"Save");
-					File file = fileSaver.getSelectedFile();
-					DownloadBackground download = new DownloadBackground(URL,file.toString());
-					
-					
-					
-					download.execute();
-
-				}
-					
-				} catch (MalformedURLException e1) {
-					e1.printStackTrace();
-				}
-				
-				
+				Download download = new Download(frame);
 			}
 		});
 
@@ -211,29 +194,7 @@ public class ProjectGUI {
 		strip.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//Open file to be extracted
-				JFileChooser fileOpener = new JFileChooser();
-				fileOpener.showDialog(null,"Choose video file to be extracted");
-				File sourcefile = fileOpener.getSelectedFile();
-				
-				//Choose location and name for audio file
-				JFileChooser fileSaver = new JFileChooser();
-				fileSaver.setFileFilter(new FileNameExtensionFilter(".mp3","MP3 audio format"));
-				fileSaver.showDialog(null,"Name output audio file");
-				File file = fileSaver.getSelectedFile();
-				
-				//If both are correctly set, extract.
-				if ((sourcefile!=null) && (file!=null)){
-					if(!file.getName().endsWith(".mp3"))
-					{
-					    file = new File(file.getAbsoluteFile() + ".mp3");
-					}
-					ExtractAudioBackground extract = new ExtractAudioBackground(sourcefile.getAbsolutePath(),file.getAbsolutePath());
-				extract.execute();		
-				}else{
-					JOptionPane.showMessageDialog(null, "File not extracted. Please specify both files correctly!");
-				}
-							
+				StripAudio strip = new StripAudio(frame);
 			}
 		});
 		
@@ -481,5 +442,6 @@ public class ProjectGUI {
 			video.mute();
 		}
 	}
+
 
 }
