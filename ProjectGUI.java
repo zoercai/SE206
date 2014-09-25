@@ -45,6 +45,10 @@ public class ProjectGUI {
 	 * if play is not first used to stop it.
 	 * 
 	 * Subtitle class - Don't do it in here :)
+	 * 
+	 * avconv -i TetrisGod.mp4 -strict experimental -vf
+	 * "drawtext=fontcolor=white:fontsize=30:fontfile=/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-L.ttf:text='Hi Zoe':x=30:y=h-text_h-30"
+	 * -crf 18 test.mp4
 	 */
 
 	private final EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
@@ -76,7 +80,7 @@ public class ProjectGUI {
 	private JMenuItem fullscreen = new JMenuItem("Full Screen");
 
 	private JMenu sub = new JMenu("Subtitle");
-	private JMenuItem add = new JMenuItem("Add Subtitle");
+	private JMenuItem add = new JMenuItem("Add Subtitle"); //TODO -> Get rid of these (not needed for assignment)
 	private JMenuItem edit = new JMenuItem("Edit Subtitle");
 	private JMenuItem title = new JMenuItem("Create Title Page");
 	private JMenuItem credit = new JMenuItem("Create Credit Page");
@@ -324,8 +328,23 @@ public class ProjectGUI {
 			public void actionPerformed(ActionEvent e) {
 				video.toggleFullScreen();
 				boolean h = video.isFullScreen();
-//				video.setSubTitleFile("/home/genevieve/sub.txt");  //TODO
-				
+
+				System.out.println(h);
+			}
+		});
+		
+		title.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				new TitleAndCreditAdder(true);
+			}
+		});
+		
+		credit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new TitleAndCreditAdder(false);
 			}
 		});
 	}
