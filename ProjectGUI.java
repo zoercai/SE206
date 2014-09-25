@@ -46,9 +46,7 @@ public class ProjectGUI {
 	 * 
 	 * Subtitle class - Don't do it in here :)
 	 * 
-	 * avconv -i TetrisGod.mp4 -strict experimental -vf
-	 * "drawtext=fontcolor=white:fontsize=30:fontfile=/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-L.ttf:text='Hi Zoe':x=30:y=h-text_h-30"
-	 * -crf 18 test.mp4
+	 * TODO Need to add cancel options to all places where choices are made
 	 */
 
 	private final EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
@@ -175,26 +173,26 @@ public class ProjectGUI {
 				String URL = JOptionPane
 						.showInputDialog("Please enter file URL: ");
 				URL url;
-				
+
 				try {
 					url = new URL(URL);
 					if (URL == null) {
-					// do nothing
-				} else {
-					JFileChooser fileSaver = new JFileChooser();
-					fileSaver.setSelectedFile(new File(url.getFile()));
-					fileSaver.showDialog(null,"Save");
-					File file = fileSaver.getSelectedFile();
-					DownloadBackground download = new DownloadBackground(URL,file.toString());
-					download.execute();
+						// do nothing
+					} else {
+						JFileChooser fileSaver = new JFileChooser();
+						fileSaver.setSelectedFile(new File(url.getFile()));
+						fileSaver.showDialog(null,"Save");
+						File file = fileSaver.getSelectedFile();
+						DownloadBackground download = new DownloadBackground(URL,file.toString());
+						download.execute();
 
-				}
-					
+					}
+
 				} catch (MalformedURLException e1) {
 					e1.printStackTrace();
 				}
-				
-				
+
+
 			}
 		});
 
@@ -204,7 +202,7 @@ public class ProjectGUI {
 				System.exit(0);
 			}
 		});
-		
+
 		strip.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -212,89 +210,89 @@ public class ProjectGUI {
 				JFileChooser fileOpener = new JFileChooser();
 				fileOpener.showDialog(null,"Choose video file to be extracted");
 				File sourcefile = fileOpener.getSelectedFile();
-				
+
 				//Choose location and name for audio file
 				JFileChooser fileSaver = new JFileChooser();
 				fileSaver.setFileFilter(new FileNameExtensionFilter(".mp3","MP3 audio format"));
 				fileSaver.showDialog(null,"Name output audio file");
 				File file = fileSaver.getSelectedFile();
-				
+
 				//If both are correctly set, extract.
 				if ((sourcefile!=null) && (file!=null)){
 					if(!file.getName().endsWith(".mp3"))
 					{
-					    file = new File(file.getAbsoluteFile() + ".mp3");
+						file = new File(file.getAbsoluteFile() + ".mp3");
 					}
 					ExtractAudioBackground extract = new ExtractAudioBackground(sourcefile.getAbsolutePath(),file.getAbsolutePath());
-				extract.execute();		
+					extract.execute();		
 				}else{
 					JOptionPane.showMessageDialog(null, "File not extracted. Please specify both files correctly!");
 				}
-							
+
 			}
 		});
-		
+
 		replace.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				//Open video file to be extracted
 				JFileChooser videoOpener = new JFileChooser();
 				videoOpener.showDialog(null,"Choose source video file");
 				File sourceVideo = videoOpener.getSelectedFile();
-				
+
 				//Open audio file to be extracted
 				JFileChooser audioOpener = new JFileChooser();
 				audioOpener.showDialog(null,"Choose source audio file");
 				File sourceAudio = audioOpener.getSelectedFile();
-				
+
 				//Choose location and name for output video file
 				JFileChooser videoSaver = new JFileChooser();
 				videoSaver.setFileFilter(new FileNameExtensionFilter(".avi","AVI audio format"));
 				videoSaver.showDialog(null,"Name output audio file");
 				File file = videoSaver.getSelectedFile();
-				
+
 				//If both are correctly set, extract.
 				if ((sourceVideo!=null) && (file!=null) && (sourceAudio!=null)){
 					if(!file.getName().endsWith(".avi"))
 					{
-					    file = new File(file.getAbsoluteFile() + ".avi");
+						file = new File(file.getAbsoluteFile() + ".avi");
 					}
 					ReplaceAudioBackground replace = new ReplaceAudioBackground(sourceVideo.getAbsolutePath(),sourceAudio.getAbsolutePath(),file.getAbsolutePath());
-				replace.execute();		
+					replace.execute();		
 				}else{
 					JOptionPane.showMessageDialog(null, "Replace not completed. Please specify all files correctly!");
 				}
 			}
-			
+
 		});
-		
-		
+
+
 		overlay.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				//Open video file to be extracted
 				JFileChooser videoOpener = new JFileChooser();
 				videoOpener.showDialog(null,"Choose source video file");
 				File sourceVideo = videoOpener.getSelectedFile();
-				
+
 				//Open audio file to be extracted
 				JFileChooser audioOpener = new JFileChooser();
 				audioOpener.showDialog(null,"Choose source audio file");
 				File sourceAudio = audioOpener.getSelectedFile();
-				
+
 				//Choose location and name for output video file
 				JFileChooser videoSaver = new JFileChooser();
 				videoSaver.setFileFilter(new FileNameExtensionFilter(".avi","AVI audio format"));
 				videoSaver.showDialog(null,"Name output audio file");
 				File file = videoSaver.getSelectedFile();
-				
+
 				//If both are correctly set, extract.
 				if ((sourceVideo!=null) && (file!=null) && (sourceAudio!=null)){
 					if(!file.getName().endsWith(".avi"))
 					{
-					    file = new File(file.getAbsoluteFile() + ".avi");
+						file = new File(file.getAbsoluteFile() + ".avi");
 					}
 					OverlayBackground overlay = new OverlayBackground(sourceVideo.getAbsolutePath(),sourceAudio.getAbsolutePath(),file.getAbsolutePath());
 					overlay.execute();		
@@ -302,7 +300,7 @@ public class ProjectGUI {
 					JOptionPane.showMessageDialog(null, "Overlay not completed. Please specify all files correctly!");
 				}
 			}
-			
+
 		});
 
 		play.addActionListener(new playListener());
@@ -329,24 +327,25 @@ public class ProjectGUI {
 				System.out.println(h);
 			}
 		});
-		
+
 		title.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				video.stop();
 				new TitleAndCreditAdder(true);
 			}
 		});
-		
+
 		credit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				video.stop();
 				new TitleAndCreditAdder(false);
 			}
 		});
 	}
 
-	
+
 
 	class Skip extends SwingWorker<Void, Integer> {
 		@Override
