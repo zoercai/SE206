@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -78,7 +80,7 @@ public class ProjectGUI {
 	private JMenuItem fullscreen = new JMenuItem("Full Screen");
 
 	private JMenu sub = new JMenu("Subtitle");
-	private JMenuItem add = new JMenuItem("Add Subtitle");
+	private JMenuItem add = new JMenuItem("Add Subtitle"); //TODO -> Get rid of these (not needed for assignment)
 	private JMenuItem edit = new JMenuItem("Edit Subtitle");
 	private JMenuItem title = new JMenuItem("Create Title Page");
 	private JMenuItem credit = new JMenuItem("Create Credit Page");
@@ -172,19 +174,27 @@ public class ProjectGUI {
 			public void actionPerformed(ActionEvent e) {
 				String URL = JOptionPane
 						.showInputDialog("Please enter file URL: ");
-				if (URL == null) {
+				URL url;
+				
+				try {
+					url = new URL(URL);
+					if (URL == null) {
 					// do nothing
 				} else {
-					JFileChooser fileOpener = new JFileChooser();
-					File ourFile;
-					fileOpener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-					fileOpener.showSaveDialog(null);
-					ourFile = fileOpener.getSelectedFile();
-					saveLocation = ourFile.getAbsolutePath();
-					DownloadBackground download = new DownloadBackground(URL,saveLocation);
+					JFileChooser fileSaver = new JFileChooser();
+					fileSaver.setSelectedFile(new File(url.getFile()));
+					fileSaver.showDialog(null,"Save");
+					File file = fileSaver.getSelectedFile();
+					DownloadBackground download = new DownloadBackground(URL,file.toString());
 					download.execute();
 
 				}
+					
+				} catch (MalformedURLException e1) {
+					e1.printStackTrace();
+				}
+				
+				
 			}
 		});
 
@@ -227,16 +237,16 @@ public class ProjectGUI {
 		replace.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				
 				//Open video file to be extracted
 				JFileChooser videoOpener = new JFileChooser();
-				videoOpener.showDialog(null,"Choose video file to be extracted");
+				videoOpener.showDialog(null,"Choose source video file");
 				File sourceVideo = videoOpener.getSelectedFile();
 				
 				//Open audio file to be extracted
 				JFileChooser audioOpener = new JFileChooser();
-				audioOpener.showDialog(null,"Choose audio file to be extracted");
-				File sourceAudio = videoOpener.getSelectedFile();
+				audioOpener.showDialog(null,"Choose source audio file");
+				File sourceAudio = audioOpener.getSelectedFile();
 				
 				//Choose location and name for output video file
 				JFileChooser videoSaver = new JFileChooser();
@@ -253,7 +263,43 @@ public class ProjectGUI {
 					ReplaceAudioBackground replace = new ReplaceAudioBackground(sourceVideo.getAbsolutePath(),sourceAudio.getAbsolutePath(),file.getAbsolutePath());
 				replace.execute();		
 				}else{
-					JOptionPane.showMessageDialog(null, "File not extracted. Please specify both files correctly!");
+					JOptionPane.showMessageDialog(null, "Replace not completed. Please specify all files correctly!");
+				}
+			}
+			
+		});
+		
+		
+		overlay.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				//Open video file to be extracted
+				JFileChooser videoOpener = new JFileChooser();
+				videoOpener.showDialog(null,"Choose source video file");
+				File sourceVideo = videoOpener.getSelectedFile();
+				
+				//Open audio file to be extracted
+				JFileChooser audioOpener = new JFileChooser();
+				audioOpener.showDialog(null,"Choose source audio file");
+				File sourceAudio = audioOpener.getSelectedFile();
+				
+				//Choose location and name for output video file
+				JFileChooser videoSaver = new JFileChooser();
+				videoSaver.setFileFilter(new FileNameExtensionFilter(".avi","AVI audio format"));
+				videoSaver.showDialog(null,"Name output audio file");
+				File file = videoSaver.getSelectedFile();
+				
+				//If both are correctly set, extract.
+				if ((sourceVideo!=null) && (file!=null) && (sourceAudio!=null)){
+					if(!file.getName().endsWith(".avi"))
+					{
+					    file = new File(file.getAbsoluteFile() + ".avi");
+					}
+					OverlayBackground overlay = new OverlayBackground(sourceVideo.getAbsolutePath(),sourceAudio.getAbsolutePath(),file.getAbsolutePath());
+					overlay.execute();		
+				}else{
+					JOptionPane.showMessageDialog(null, "Overlay not completed. Please specify all files correctly!");
 				}
 			}
 			
@@ -279,7 +325,23 @@ public class ProjectGUI {
 			public void actionPerformed(ActionEvent e) {
 				video.toggleFullScreen();
 				boolean h = video.isFullScreen();
+
 				System.out.println(h);
+			}
+		});
+		
+		title.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				new TitleAndCreditAdder(true);
+			}
+		});
+		
+		credit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new TitleAndCreditAdder(false);
 			}
 		});
 	}
@@ -318,7 +380,6 @@ public class ProjectGUI {
 			gobackward = false;
 			video.playMedia(videoLocation);
 			video.parseMedia();
-			System.out.println(video.getMediaMeta().getLength());
 			int max = (int) video.getMediaMeta().getLength();
 			timeBar.setMaximum(max);
 			while (video.getTime() < max) {
