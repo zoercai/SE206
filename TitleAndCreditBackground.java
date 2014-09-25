@@ -1,5 +1,6 @@
 package mediaPlayer;
 
+import java.awt.BorderLayout;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -7,12 +8,14 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
 public class TitleAndCreditBackground extends SwingWorker<Integer, Integer> {
 	private String _instruction;
 	private JFrame progressBar = new JFrame("Adding Text");
 	private JProgressBar pbar = new JProgressBar();
+	private JTextArea progress = new JTextArea("Progress:");
 	private boolean updatePBar = false;
 	private int _frames;
 
@@ -20,11 +23,12 @@ public class TitleAndCreditBackground extends SwingWorker<Integer, Integer> {
 		_instruction = instruction;
 		_frames = frames;
 
-		progressBar.add(pbar); // TODO Implement progress bar
+		progressBar.add(progress,BorderLayout.NORTH);
+		progressBar.add(pbar,BorderLayout.SOUTH); // TODO Implement progress bar
 		pbar.setMaximum(frames);
 
 		progressBar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		progressBar.setSize(100, 200);
+		progressBar.setSize(50, 200);
 		progressBar.setVisible(true);
 	}
 
@@ -39,23 +43,19 @@ public class TitleAndCreditBackground extends SwingWorker<Integer, Integer> {
 			while (line != null && !isCancelled()) {
 				line = stdoutDownload.readLine();
 				System.out.println(line);
-//				if (updatePBar == true) {
-					String[] lines = line.split(" ");
-					System.out.println(lines[1]);
-//					int frame = Integer.parseInt(lines[1]);
-//					System.out.println(frame);
-//					while (frame < _frames) {
-//						publish((int) frame);
-//					}
-//					pbar.setValue(frame);
-//				}
-//				if (line.equals("Press ctrl-c to stop encoding")) {
-//					updatePBar = true;
-//				}
+				String[] lines = line.split(" ");
+				System.out.println(lines[1]);
+				try {
+					int i = Integer.parseInt(lines[1]);
+					publish((int) i);
+//					System.out.println("cool");
+				} catch (Exception e) {
+
+				}
 			}
 		} catch (Exception e) {
 		}
-		return null;
+		return null; //TODO make not return null
 	}
 
 	@Override

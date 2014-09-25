@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 import com.sun.jna.NativeLibrary;
 
@@ -30,7 +31,7 @@ public class TitleAndCreditAdder {
 	 * Progress bar??? TODO
 	 * Change the setout to make it better TODO
 	 */
-	
+
 
 	JFrame frame = new JFrame("Add Title Scene");
 	JFrame goop = new JFrame("Pop-up");
@@ -68,7 +69,7 @@ public class TitleAndCreditAdder {
 	JButton preview = new JButton("Preview");
 	JPanel buttons = new JPanel(new FlowLayout());
 	JPanel please = new JPanel(new BorderLayout());
-	
+
 	private final EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 	private final EmbeddedMediaPlayer previewArea = mediaPlayerComponent.getMediaPlayer();   // Maybe have a video player that will play for their chosen duration
 
@@ -138,12 +139,12 @@ public class TitleAndCreditAdder {
 
 		enter.addActionListener(new EnterListener());
 		preview.addActionListener(new PreviewListener());
-		
-		please.add(mediaPlayerComponent);
-		
+
+		//		please.add(mediaPlayerComponent);
+
 		frame.add(panelCont,BorderLayout.NORTH);
-		frame.add(please,BorderLayout.SOUTH);
-		
+		frame.add(mediaPlayerComponent,BorderLayout.CENTER);
+
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setSize(500, 500);
 		frame.setVisible(true);
@@ -151,7 +152,8 @@ public class TitleAndCreditAdder {
 
 	private class EnterListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			String instruction = instructionCreator();
+			String instruction = "avconv -i " + videoLocation + " -strict experimental -vf ";
+			instruction = instructionCreator(instruction);
 
 			instruction = instruction + saveLocation;
 			int frames = getFrameCount();
@@ -163,26 +165,11 @@ public class TitleAndCreditAdder {
 
 	private class PreviewListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			try {
-				int num = 0;
-				String instruction = instructionCreator();
-				instruction = instruction + "/home/.temp.mp4";
-				ProcessBuilder titleAdder = new ProcessBuilder("bash", "-c", instruction);
-				titleAdder.redirectErrorStream(true);
-				Process downloadProcess = titleAdder.start();
-				BufferedReader stdoutDownload = new BufferedReader(new InputStreamReader(downloadProcess.getInputStream()));
-				String line = stdoutDownload.readLine();
-				while (line != null && num < 10) {
-					line = stdoutDownload.readLine();
-					num++;
-				}
-			} catch (Exception epp) {
-			}
-			
-		//TODO
-			
-			previewArea.playMedia("/home/.temp.mp4");
-			previewArea.parseMedia();
+			String homeDir = System.getProperty("user.home");
+			String temp = homeDir + "/temp.mp4";
+			File file = new File(temp);
+			PreviewSwing hog = new PreviewSwing();
+			hog.execute();
 		}
 	}
 
@@ -292,9 +279,7 @@ public class TitleAndCreditAdder {
 		}
 	}
 
-	public String instructionCreator() {
-		String instruction = "avconv -i " + videoLocation + " -strict experimental -vf ";
-
+	public String instructionCreator(String instruction) {
 		// colour reading
 		Object instructcolour = colourChoice.getSelectedItem();
 		if (instructcolour.equals("Blue")) {
@@ -361,5 +346,88 @@ public class TitleAndCreditAdder {
 		}
 
 		return instruction;
+	}
+	
+	public String intToStringTime(int time) {
+		String timeInput = "";
+		int hour = time / 3600;
+		time = time % 3600;
+		int minute = time / 60;
+		time = time % 60;
+		int second = time;
+		if (hour < 10) {
+			timeInput = "0" + hour +":";
+		} else {
+			timeInput = hour +":";
+		}
+		if (minute < 10) {
+			timeInput = timeInput + "0" + minute +":";
+		} else {
+			timeInput = timeInput + minute +":";
+		}
+		if (second < 10) {
+			timeInput = timeInput + "0" + second;
+		} else {
+			timeInput = timeInput + second;
+		}
+		return timeInput;
+	}
+
+	public class PreviewSwing extends SwingWorker<Integer, Integer> {
+		@Override
+		protected Integer doInBackground() throws Exception {
+			String homeDir = System.getProperty("user.home");
+			String cuttemp = homeDir + "/cuttemp.mp4";
+			File cutfile = new File(cuttemp);
+			cutfile.delete();
+			ProcessBuilder cut ;
+			if (_isTitle == true) {
+				cut = new ProcessBuilder("bash","-c","avconv -ss 00:00:00 -i "+ videoLocation + 
+					" -strict experimental -t 00:00:10 -c:v libx264 -crf 23 " + cutfile.getAbsolutePath());
+			} else {
+				int len = getLength(videoLocation);
+				int lenLess10 = len - 10;
+				if (lenLess10 < 0) {
+					lenLess10 = 0;
+				}
+				String end = intToStringTime(len);
+				String endLess10 = intToStringTime(lenLess10 );
+				
+				cut = new ProcessBuilder("bash","-c","avconv -ss " + endLess10 + " -i " + videoLocation + 
+						" -strict experimental -t "+ end + " -c:v libx264 -crf 23 " + cutfile.getAbsolutePath());
+			}
+			cut.redirectErrorStream(true);
+			Process slice = cut.start();
+			BufferedReader cutty = new BufferedReader(new InputStreamReader(slice.getInputStream()));
+			String linecut = cutty.readLine();
+			while (linecut != null) {
+				System.out.println(linecut);
+				linecut = cutty.readLine();
+			}
+
+
+			String temp = homeDir + "/temp.mp4";
+			File file = new File(temp);
+			file.delete();
+			String instruction = "avconv -i " + cutfile.getAbsolutePath() + " -strict experimental -vf ";
+			instruction = instructionCreator(instruction);
+			instruction = instruction + file.getAbsolutePath();
+			ProcessBuilder titleAdder = new ProcessBuilder("bash", "-c", instruction);
+			titleAdder.redirectErrorStream(true);
+			Process downloadProcess = titleAdder.start();
+			BufferedReader stdoutDownload = new BufferedReader(new InputStreamReader(downloadProcess.getInputStream()));
+			String line = stdoutDownload.readLine();
+			while (line != null) {
+				System.out.println(line);
+				line = stdoutDownload.readLine();
+			}
+			cutfile.delete();
+
+			previewArea.playMedia(file.getAbsolutePath());
+			previewArea.parseMedia();
+			file.delete();
+// TODO due to the whole less than greater than thing, this doesn't show words on credit -> easy fix
+			return null;
+		}
 	}
 }
