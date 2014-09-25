@@ -74,14 +74,10 @@ public class ProjectGUI {
 	private JMenuItem overlay = new JMenuItem("Overlay Audio");
 	private JMenuItem menuMute = new JMenuItem("Mute");
 
-	private JMenu view = new JMenu("View");
-	private JMenuItem fullscreen = new JMenuItem("Full Screen");
-
 	private JMenu sub = new JMenu("Subtitle");
-	private JMenuItem add = new JMenuItem("Add Subtitle"); //TODO -> Get rid of these (not needed for assignment)
-	private JMenuItem edit = new JMenuItem("Edit Subtitle");
 	private JMenuItem title = new JMenuItem("Create Title Page");
 	private JMenuItem credit = new JMenuItem("Create Credit Page");
+	private JMenuItem editT = new JMenuItem("Edit Title or Credit Page");
 
 	private JMenu help = new JMenu("Help");
 	private JMenuItem f1 = new JMenuItem("Help...");
@@ -128,14 +124,10 @@ public class ProjectGUI {
 		audio.add(overlay);
 		audio.add(menuMute);
 
-		menu.add(view);
-		view.add(fullscreen);
-
 		menu.add(sub);
-		sub.add(add);
-		sub.add(edit);
 		sub.add(title);
 		sub.add(credit);
+		sub.add(editT);
 
 		menu.add(help);
 		help.add(f1);
@@ -154,6 +146,8 @@ public class ProjectGUI {
 		frame.setSize(1050, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+
+		checkForLog();
 
 		browse.addActionListener(new ActionListener() {
 			@Override
@@ -318,21 +312,11 @@ public class ProjectGUI {
 		back.addActionListener(new rewindListener());
 		menuBackward.addActionListener(new rewindListener());
 
-		fullscreen.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				video.toggleFullScreen();
-				boolean h = video.isFullScreen();
-
-				System.out.println(h);
-			}
-		});
-
 		title.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				video.stop();
-				new TitleAndCreditAdder(true);
+				new TitleAndCreditAdder(true,false,null,null,null);
 			}
 		});
 
@@ -340,7 +324,15 @@ public class ProjectGUI {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				video.stop();
-				new TitleAndCreditAdder(false);
+				new TitleAndCreditAdder(false,false,null,null,null);
+			}
+		});
+		
+		editT.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				video.stop();
+				new EditTitleOrCredit();
 			}
 		});
 	}
@@ -478,4 +470,15 @@ public class ProjectGUI {
 		}
 	}
 
+	private void checkForLog() {
+		try {
+			String homeDir = System.getProperty("user.home");
+			String logname = homeDir + "/VAMIXlog.txt";
+			File log = new File(logname);
+			if (!log.exists()) {
+				log.createNewFile();
+			}
+		} catch (Exception e) {
+		}
+	}
 }

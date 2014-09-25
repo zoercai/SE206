@@ -2,6 +2,9 @@ package mediaPlayer;
 
 import java.awt.BorderLayout;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.List;
 
@@ -17,7 +20,7 @@ public class TitleAndCreditBackground extends SwingWorker<Integer, Integer> {
 	private JProgressBar pbar = new JProgressBar();
 	private JTextArea progress = new JTextArea("Progress:");
 
-	public TitleAndCreditBackground (String instruction,int frames) {
+	public TitleAndCreditBackground (String instruction,int frames) {;
 		_instruction = instruction;
 
 		progressBar.add(progress,BorderLayout.CENTER);
@@ -39,9 +42,7 @@ public class TitleAndCreditBackground extends SwingWorker<Integer, Integer> {
 			String line = stdoutDownload.readLine();
 			while (line != null && !isCancelled()) {
 				line = stdoutDownload.readLine();
-				System.out.println(line);
 				String[] lines = line.split(" ");
-				System.out.println(lines[1]);
 				try {
 					int i = Integer.parseInt(lines[1]);
 					publish((int) i);

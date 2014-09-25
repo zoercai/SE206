@@ -7,7 +7,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -36,7 +38,7 @@ public class TitleAndCreditAdder {
 	JFrame goop = new JFrame("Pop-up");
 
 	JTextArea title = new JTextArea("Enter your text: ");
-	JTextArea text = new JTextArea(1,10);
+	JTextArea text;
 	JPanel textPanel = new JPanel(new FlowLayout());
 
 	JTextArea size = new JTextArea("Size ");
@@ -77,31 +79,49 @@ public class TitleAndCreditAdder {
 	String videoLocation;
 	String saveLocation;
 	Boolean _isTitle;
+	Boolean _isEdit;
 
-	public TitleAndCreditAdder(boolean isTitle) { // TODO check input is video?
+	public TitleAndCreditAdder(boolean isTitle, boolean edit, String original, String editText, String name) { // TODO check input is video?
 		_isTitle = isTitle;
-		if (_isTitle == false) {
+		_isEdit = edit;
+		if (_isTitle == false && _isEdit == false) {
 			frame.setTitle("Add Credit Scene");
+		} else if (_isEdit == true ) {
+			frame.setTitle("Edit Text");
+			videoLocation = original;
+			saveLocation = name;
+			File del = new File(saveLocation);
+			Boolean dod = del.delete();
+			if (dod == false) {
+				System.out.println(saveLocation);
+			}
+			text = new JTextArea(editText);
+		}
+		
+		if (_isEdit == false) {
+			text = new JTextArea(1,10);
 		}
 
-		JFileChooser fc = new JFileChooser();
-		int result = fc.showOpenDialog(null);
-		if (result == JFileChooser.CANCEL_OPTION) {
-			return;
-		}
-		File file1 = fc.getSelectedFile(); 
-		videoLocation = file1.getAbsolutePath();
+		if (_isEdit == false) {
+			JFileChooser fc = new JFileChooser();
+			int result = fc.showOpenDialog(null);
+			if (result == JFileChooser.CANCEL_OPTION) {
+				return;
+			}
+			File file1 = fc.getSelectedFile(); 
+			videoLocation = file1.getAbsolutePath();
 
-		JFileChooser fileSaver = new JFileChooser();
-		fileSaver.setSelectedFile(new File(""));
-		int res = fileSaver.showDialog(null,"Save");
-		if (res == JFileChooser.CANCEL_OPTION) {
-			return;
+			JFileChooser fileSaver = new JFileChooser();
+			fileSaver.setSelectedFile(new File(""));
+			int res = fileSaver.showDialog(null,"Save");
+			if (res == JFileChooser.CANCEL_OPTION) {
+				return;
+			}
+			File file2 = fileSaver.getSelectedFile();
+			saveLocation = file2.getAbsolutePath();
+			saveLocation = checkSaveName(saveLocation);
+			checkExists(saveLocation);
 		}
-		File file2 = fileSaver.getSelectedFile();
-		saveLocation = file2.getAbsolutePath();
-		saveLocation = checkSaveName(saveLocation);
-		checkExists(saveLocation);
 
 		textPanel.add(title);
 		textPanel.add(text); 
@@ -140,8 +160,6 @@ public class TitleAndCreditAdder {
 		enter.addActionListener(new EnterListener());
 		preview.addActionListener(new PreviewListener());
 
-		//		please.add(mediaPlayerComponent);
-
 		frame.add(panelCont,BorderLayout.NORTH);
 		frame.add(mediaPlayerComponent,BorderLayout.CENTER);
 
@@ -152,9 +170,10 @@ public class TitleAndCreditAdder {
 
 	private class EnterListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			previewArea.stop();
 			String instruction = "avconv -i " + videoLocation + " -strict experimental -vf ";
 			instruction = instructionCreator(instruction);
-			
+
 			Object instructduration = durationChoice.getSelectedItem();
 			String num = instructduration.toString();
 			if (_isTitle == true) {
@@ -165,6 +184,11 @@ public class TitleAndCreditAdder {
 				int t = end - n;
 				instruction+=":draw='gt(t,"+t+")'\" -crf 18 ";
 			}
+
+			String homeDir = System.getProperty("user.home");
+			String logname = homeDir + "/VAMIXlog.txt";
+			File log = new File(logname);
+			addToLog(log);
 
 			instruction = instruction + saveLocation;
 			int frames = getFrameCount();
@@ -195,6 +219,16 @@ public class TitleAndCreditAdder {
 			return num;
 		} catch (Exception e) {
 			return 0;
+		}
+	}
+
+	private void addToLog(File log){
+		try {
+			FileWriter fileWritter = new FileWriter(log.getAbsolutePath(),true);
+			BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+			bufferWritter.write(videoLocation + " " + _isTitle + " " + saveLocation + " " + text.getText() + "\n");
+			bufferWritter.close();
+		} catch (Exception e) {
 		}
 	}
 
@@ -346,7 +380,7 @@ public class TitleAndCreditAdder {
 		} 
 		return instruction;
 	}
-	
+
 	public String intToStringTime(int time) {
 		String timeInput = "";
 		int hour = time / 3600;
@@ -382,7 +416,7 @@ public class TitleAndCreditAdder {
 			ProcessBuilder cut ;
 			if (_isTitle == true) {
 				cut = new ProcessBuilder("bash","-c","avconv -ss 00:00:00 -i "+ videoLocation + 
-					" -strict experimental -t 00:00:10 -c:v libx264 -crf 23 " + cutfile.getAbsolutePath());
+						" -strict experimental -t 00:00:10 -c:v libx264 -crf 23 " + cutfile.getAbsolutePath());
 			} else {
 				int len = getLength(videoLocation);
 				int lenLess10 = len - 10;
@@ -391,7 +425,7 @@ public class TitleAndCreditAdder {
 				}
 				String end = intToStringTime(len);
 				String endLess10 = intToStringTime(lenLess10 );
-				
+
 				cut = new ProcessBuilder("bash","-c","avconv -ss " + endLess10 + " -i " + videoLocation + 
 						" -strict experimental -t "+ end + " -c:v libx264 -crf 23 " + cutfile.getAbsolutePath());
 			}
