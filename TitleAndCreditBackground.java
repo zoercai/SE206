@@ -16,19 +16,16 @@ public class TitleAndCreditBackground extends SwingWorker<Integer, Integer> {
 	private JFrame progressBar = new JFrame("Adding Text");
 	private JProgressBar pbar = new JProgressBar();
 	private JTextArea progress = new JTextArea("Progress:");
-	private boolean updatePBar = false;
-	private int _frames;
 
 	public TitleAndCreditBackground (String instruction,int frames) {
 		_instruction = instruction;
-		_frames = frames;
 
-		progressBar.add(progress,BorderLayout.NORTH);
-		progressBar.add(pbar,BorderLayout.SOUTH); // TODO Implement progress bar
+		progressBar.add(progress,BorderLayout.CENTER);
+		progressBar.add(pbar,BorderLayout.SOUTH); 
 		pbar.setMaximum(frames);
 
 		progressBar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		progressBar.setSize(50, 200);
+		progressBar.setSize(500, 60);
 		progressBar.setVisible(true);
 	}
 
@@ -48,14 +45,12 @@ public class TitleAndCreditBackground extends SwingWorker<Integer, Integer> {
 				try {
 					int i = Integer.parseInt(lines[1]);
 					publish((int) i);
-//					System.out.println("cool");
 				} catch (Exception e) {
-
 				}
 			}
 		} catch (Exception e) {
 		}
-		return null; //TODO make not return null
+		return null;
 	}
 
 	@Override
@@ -69,12 +64,10 @@ public class TitleAndCreditBackground extends SwingWorker<Integer, Integer> {
 	protected void done() {
 		if (!this.isCancelled()) {
 			JOptionPane.showMessageDialog(null, "Text successfully added to video");
+			progressBar.dispose();
 		} else if (this.isCancelled()) {
 			JOptionPane.showMessageDialog(null, "Something went wrong :(");
-			// this.getState()).toString() + " " + status
+			progressBar.dispose();
 		}
-		// progressBar.setValue(0);
-		// progressBar.setStringPainted(false);
-		// cclDownload.setEnabled(false);
 	}
 }

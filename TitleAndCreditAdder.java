@@ -28,7 +28,6 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 public class TitleAndCreditAdder {
 
 	/*
-	 * Progress bar??? TODO
 	 * Change the setout to make it better TODO
 	 */
 
@@ -36,8 +35,8 @@ public class TitleAndCreditAdder {
 	JFrame frame = new JFrame("Add Title Scene");
 	JFrame goop = new JFrame("Pop-up");
 
-	JTextArea title = new JTextArea("Enter your text: "); //TODO Put limit on amount of text
-	JTextArea text = new JTextArea(1,10); // TODO Change the size rearranging 
+	JTextArea title = new JTextArea("Enter your text: ");
+	JTextArea text = new JTextArea(1,10);
 	JPanel textPanel = new JPanel(new FlowLayout());
 
 	JTextArea size = new JTextArea("Size ");
@@ -106,6 +105,7 @@ public class TitleAndCreditAdder {
 
 		textPanel.add(title);
 		textPanel.add(text); 
+		title.setEditable(false);
 
 		sizePanel.add(size);
 		sizePanel.add(sizeChoice);
@@ -154,6 +154,17 @@ public class TitleAndCreditAdder {
 		public void actionPerformed(ActionEvent e) {
 			String instruction = "avconv -i " + videoLocation + " -strict experimental -vf ";
 			instruction = instructionCreator(instruction);
+			
+			Object instructduration = durationChoice.getSelectedItem();
+			String num = instructduration.toString();
+			if (_isTitle == true) {
+				instruction+=":draw='lt(t,"+num+")'\" -crf 18 ";
+			} else {
+				int n = Integer.parseInt(num);
+				int end = getLength(videoLocation);
+				int t = end - n;
+				instruction+=":draw='gt(t,"+t+")'\" -crf 18 ";
+			}
 
 			instruction = instruction + saveLocation;
 			int frames = getFrameCount();
@@ -327,24 +338,12 @@ public class TitleAndCreditAdder {
 		instruction+="x=(main_w/2-text_w/2):";
 		Object instructYposition = positionChoiceVertical.getSelectedItem();
 		if (instructYposition.equals("Top")) {
-			instruction+="y=h-text_h-30:";
+			instruction+="y=h-text_h-30";
 		} else if (instructYposition.equals("Centre")){
-			instruction+="y=main_h/2-text_h/2:";
+			instruction+="y=main_h/2-text_h/2";
 		} else {
-			instruction+="y=main_h+30:";
+			instruction+="y=main_h+30";
 		} 
-
-		Object instructduration = durationChoice.getSelectedItem();
-		String num = instructduration.toString();
-		if (_isTitle == true) {
-			instruction+="draw='lt(t,"+num+")'\" -crf 18 ";
-		} else {
-			int n = Integer.parseInt(num);
-			int end = getLength(videoLocation);
-			int t = end - n;
-			instruction+="draw='gt(t,"+t+")'\" -crf 18 ";
-		}
-
 		return instruction;
 	}
 	
@@ -411,7 +410,8 @@ public class TitleAndCreditAdder {
 			file.delete();
 			String instruction = "avconv -i " + cutfile.getAbsolutePath() + " -strict experimental -vf ";
 			instruction = instructionCreator(instruction);
-			instruction = instruction + file.getAbsolutePath();
+			instruction = instruction + "\" " + file.getAbsolutePath();
+			System.out.println(instruction);
 			ProcessBuilder titleAdder = new ProcessBuilder("bash", "-c", instruction);
 			titleAdder.redirectErrorStream(true);
 			Process downloadProcess = titleAdder.start();
@@ -426,7 +426,6 @@ public class TitleAndCreditAdder {
 			previewArea.playMedia(file.getAbsolutePath());
 			previewArea.parseMedia();
 			file.delete();
-// TODO due to the whole less than greater than thing, this doesn't show words on credit -> easy fix
 			return null;
 		}
 	}
