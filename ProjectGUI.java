@@ -2,15 +2,9 @@ package mediaPlayer;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -18,15 +12,11 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.ProgressMonitor;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
@@ -94,7 +84,10 @@ public class ProjectGUI{
 	private JMenuItem f1 = new JMenuItem("Help...");
 	private JMenuItem about = new JMenuItem("About");
 
+	private JPanel timePanel = new JPanel(new FlowLayout());
 	private JProgressBar timeBar = new JProgressBar();
+	private JTextField timeCount = new JTextField(" --:-- ");
+	private JTextField timeTotal = new JTextField(" --:-- ");
 
 	private JButton play = new JButton("Play");
 	private JButton stop = new JButton("Stop");
@@ -109,16 +102,22 @@ public class ProjectGUI{
 
 	String videoLocation = "";
 	String saveLocation = "";
-	
-	private ProgressMonitor progressMonitor;
-	private PrintStream taskOutput;
 
 	private ProjectGUI(String[] args) {
 		final JFrame frame = new JFrame("Lysandros Media Player");
 
 		main.add(menu, BorderLayout.NORTH);
 		main.add(bottom, BorderLayout.SOUTH);
-		bottom.add(timeBar, BorderLayout.NORTH);
+		timePanel.add(timeCount);
+		timePanel.add(timeBar);
+		timeCount.setEditable(false);
+		timeCount.setColumns(4);
+		timeCount.setHorizontalAlignment(JTextField.CENTER);
+		timeTotal.setEditable(false);
+		timeTotal.setColumns(4);
+		timeTotal.setHorizontalAlignment(JTextField.CENTER);
+		timePanel.add(timeTotal);
+		bottom.add(timePanel,BorderLayout.NORTH);
 		bottom.add(dock, BorderLayout.SOUTH);
 
 		menu.add(media);
@@ -173,6 +172,7 @@ public class ProjectGUI{
 				File file = fc.getSelectedFile();
 				videoLocation = file.getAbsolutePath();
 				VideoPlayer video = new VideoPlayer();
+				
 				video.execute();
 			}
 		});
@@ -201,72 +201,17 @@ public class ProjectGUI{
 		replace.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				ReplaceAudio replace = new ReplaceAudio(frame);
 				
-				//Open video file to be extracted
-				JFileChooser videoOpener = new JFileChooser();
-				videoOpener.showDialog(null,"Choose source video file");
-				File sourceVideo = videoOpener.getSelectedFile();
-				
-				//Open audio file to be extracted
-				JFileChooser audioOpener = new JFileChooser();
-				audioOpener.showDialog(null,"Choose source audio file");
-				File sourceAudio = audioOpener.getSelectedFile();
-				
-				//Choose location and name for output video file
-				JFileChooser videoSaver = new JFileChooser();
-				videoSaver.setFileFilter(new FileNameExtensionFilter(".avi","AVI audio format"));
-				videoSaver.showDialog(null,"Name output audio file");
-				File file = videoSaver.getSelectedFile();
-				
-				//If both are correctly set, extract.
-				if ((sourceVideo!=null) && (file!=null) && (sourceAudio!=null)){
-					if(!file.getName().endsWith(".avi"))
-					{
-					    file = new File(file.getAbsoluteFile() + ".avi");
-					}
-					ReplaceAudioBackground replace = new ReplaceAudioBackground(sourceVideo.getAbsolutePath(),sourceAudio.getAbsolutePath(),file.getAbsolutePath());
-				replace.execute();		
-				}else{
-					JOptionPane.showMessageDialog(null, "Replace not completed. Please specify all files correctly!");
-				}
-			}
-			
+			}			
 		});
 		
 		
 		overlay.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				//Open video file to be extracted
-				JFileChooser videoOpener = new JFileChooser();
-				videoOpener.showDialog(null,"Choose source video file");
-				File sourceVideo = videoOpener.getSelectedFile();
-				
-				//Open audio file to be extracted
-				JFileChooser audioOpener = new JFileChooser();
-				audioOpener.showDialog(null,"Choose source audio file");
-				File sourceAudio = audioOpener.getSelectedFile();
-				
-				//Choose location and name for output video file
-				JFileChooser videoSaver = new JFileChooser();
-				videoSaver.setFileFilter(new FileNameExtensionFilter(".avi","AVI audio format"));
-				videoSaver.showDialog(null,"Name output audio file");
-				File file = videoSaver.getSelectedFile();
-				
-				//If both are correctly set, extract.
-				if ((sourceVideo!=null) && (file!=null) && (sourceAudio!=null)){
-					if(!file.getName().endsWith(".avi"))
-					{
-					    file = new File(file.getAbsoluteFile() + ".avi");
-					}
-					OverlayBackground overlay = new OverlayBackground(sourceVideo.getAbsolutePath(),sourceAudio.getAbsolutePath(),file.getAbsolutePath());
-					overlay.execute();		
-				}else{
-					JOptionPane.showMessageDialog(null, "Overlay not completed. Please specify all files correctly!");
-				}
+				OverlayAudio overlay = new OverlayAudio(frame);
 			}
-			
 		});
 
 		play.addActionListener(new playListener());
@@ -316,23 +261,15 @@ public class ProjectGUI{
 		@Override
 		protected Void doInBackground() throws Exception {
 			while (goforward == true) {
-				video.skip(0010);
+				video.skip(0100);
 			}
 			while (gobackward == true) {
-				video.skip(-0010);
+				video.skip(-0100);
 			}
 			if (paused == true) {
 				video.pause();
 			}
 			return null;
-		}
-
-		@Override
-		protected void process(List<Integer> chunks) {
-		}
-
-		@Override
-		protected void done() {
 		}
 	}
 
@@ -346,6 +283,7 @@ public class ProjectGUI{
 			video.parseMedia();
 			int max = (int) video.getMediaMeta().getLength();
 			timeBar.setMaximum(max);
+			timeTotal.setText(String.format("%02d:%02d", (int)max/60000, (int)max%60000/1000));
 			while (video.getTime() < max) {
 				publish((int) video.getTime());
 			}
@@ -354,16 +292,20 @@ public class ProjectGUI{
 
 		@Override
 		protected void process(List<Integer> chunks) {
-			for (int progress : chunks) {
-				timeBar.setValue(progress);
-			}
-
+			
+		
+				timeBar.setValue(chunks.get(chunks.size()-1));
+				if (!timeCount.getText().equals(String.format("%02d:%02d", (int)chunks.get(chunks.size()-1)/60000, (int)(chunks.get(chunks.size()-1))%60000/1000))){
+					timeCount.setText(String.format("%02d:%02d", (int)chunks.get(chunks.size()-1)/60000, (int)(chunks.get(chunks.size()-1))%60000/1000));
+				}
+			
 		}
 
 		@Override
 		protected void done() {
 			video.stop();
 			timeBar.setValue(0);
+			timeCount.setText("--:--");
 			endofvideo = true;
 			goforward = false;
 		}
