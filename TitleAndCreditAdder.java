@@ -95,21 +95,20 @@ public class TitleAndCreditAdder {
 			File del = new File(saveLocation);
 			Boolean dod = del.delete();
 			if (dod == false) {
-				System.out.println(saveLocation);
 			}
 			text = new JTextArea(editText);
 		}
-		
+
 		if (_isEdit == false) {
 			text = new JTextArea(1,10);
 		}
 
 		panelCont.setLayout(new BoxLayout(panelCont,BoxLayout.Y_AXIS));
 		panelCont.add(Box.createVerticalGlue());
-		
-		
-		
-		
+
+
+
+
 		if (_isEdit == false) {
 			JFileChooser fc = new JFileChooser();
 			int result = fc.showOpenDialog(null);
@@ -254,12 +253,10 @@ public class TitleAndCreditAdder {
 		String[] ext = videoLocation.split("\\.");
 		String extension = ".mp4";
 		if (ext.length > 1) {
-			extension = "." + ext[1];
+			extension = "." + ext[ext.length-1];
 		}
+		save = save + extension;;
 
-		if(!save.contains(".")) {
-			save = save + extension;
-		}
 		return save;
 	}
 
@@ -271,9 +268,7 @@ public class TitleAndCreditAdder {
 					"bash", "-c", chkFileExistsCmd);
 			checkFileBuilder.redirectErrorStream(true);
 			Process checkFileProcess = checkFileBuilder.start();
-			//			if (!this.isCancelled()) {
 			status = checkFileProcess.waitFor();
-			//			}
 			if (checkFileProcess.exitValue() == 0) { 
 				// Option Pane code from http://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
 				Object[] options = {"Override",
@@ -436,7 +431,6 @@ public class TitleAndCreditAdder {
 			BufferedReader cutty = new BufferedReader(new InputStreamReader(slice.getInputStream()));
 			String linecut = cutty.readLine();
 			while (linecut != null) {
-				System.out.println(linecut);
 				linecut = cutty.readLine();
 			}
 
@@ -447,14 +441,12 @@ public class TitleAndCreditAdder {
 			String instruction = "avconv -i " + cutfile.getAbsolutePath() + " -strict experimental -vf ";
 			instruction = instructionCreator(instruction);
 			instruction = instruction + "\" " + file.getAbsolutePath();
-			System.out.println(instruction);
 			ProcessBuilder titleAdder = new ProcessBuilder("bash", "-c", instruction);
 			titleAdder.redirectErrorStream(true);
 			Process downloadProcess = titleAdder.start();
 			BufferedReader stdoutDownload = new BufferedReader(new InputStreamReader(downloadProcess.getInputStream()));
 			String line = stdoutDownload.readLine();
 			while (line != null) {
-				System.out.println(line);
 				line = stdoutDownload.readLine();
 			}
 			cutfile.delete();

@@ -131,9 +131,9 @@ public class ProjectGUI{
 		sub.add(credit);
 		sub.add(editT);
 
-		menu.add(help);
+		/*menu.add(help);
 		help.add(f1);
-		help.add(about);
+		help.add(about);*/
 
 		dock.add(play);
 		dock.add(stop);

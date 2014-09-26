@@ -6,20 +6,6 @@ When the program is running it opens on a media player which has a menu bar at t
 
 To Open a video click on media in the menu and select "Open File...". As soon as the file is open it will start playing. To pause the video press the play button, which has both pause and play functionality. To fast forward press the forward button and press rewind to go back through the video. To stop the video press the stop button. Each of these buttons have a twin in the menu bar under playback. To mute the audio press the mute button, there is a mute component in the menu under the audio menu.
 
-Play:
-Plays or pauses the video. Is on the dock and under playback.
-Stop:
-Stops the video. Is on the dock and under playback.
-Fast Forward:
-Fast Forwards the video. Is on the dock and under playback.
-Rewind:
-Rewinds the video. Is on the dock and under playback.
-Mute:
-Mutes the video. Is on the dock and under audio.
-Volume Slider:
-Slide to adjust the volume. Left is lower and rigth is higher.
-
-
 To Download a video click on media in the menu and select "Download File...". URL allows the user to enter/paste the URL of the video to be downloaded. The open-source checkbox should be ticked if the video to be downloaded is open-source. The Save As field allows the user to select the location to save the file as well as specify the name of the output file. Clicking the download button will start the download process and the progress bar. IF the open source checkbox is not ticked, the mediaplayer will refuse to download the file. If the file already exists, a pop-up will give the user warning, and ask if the file should be overriden, resumed (to download), or if the operation should be cancelled. The progress bar will stop once the process is completed, and a pop-up confirmation will notify the user whether the process was successful, and if not, what could have caused the problem. 
 
 
