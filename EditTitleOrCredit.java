@@ -1,8 +1,10 @@
 package mediaPlayer;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -24,12 +26,15 @@ public class EditTitleOrCredit {
 
 
 	public void readLog() {
+		String homeDir = System.getProperty("user.home");
+		String logname = homeDir + "/VAMIXlog.txt";
+		String tempFile = homeDir + "/tempFile.txt";
+		File log = new File(logname);
+		File temp= new File(tempFile);
 		try {
-			String homeDir = System.getProperty("user.home");
-			String logname = homeDir + "/VAMIXlog.txt";
-			File log = new File(logname);
 			FileReader fr = new FileReader(log.getAbsolutePath());
 			BufferedReader textReader = new BufferedReader(fr);
+			BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 			String input = textReader.readLine();
 
 			while (input != null) {
@@ -50,9 +55,15 @@ public class EditTitleOrCredit {
 						}
 						new TitleAndCreditAdder(false, true,details[0],text,details[2]);
 					}
+				} else {
+					writer.write(input);
 				}
 				input = textReader.readLine();
 			}
+			writer.close();
+			textReader.close();
+			temp.renameTo(log);
+
 
 			if (canEdit == false) {
 				JOptionPane.showMessageDialog(null, "Cannot Edit File");

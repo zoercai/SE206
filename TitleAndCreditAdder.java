@@ -11,6 +11,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -34,52 +37,51 @@ public class TitleAndCreditAdder {
 	 */
 
 
-	JFrame frame = new JFrame("Add Title Scene");
-	JFrame goop = new JFrame("Pop-up");
+	private JFrame frame = new JFrame("Add Title Scene");
+	private JFrame goop = new JFrame("Pop-up");
 
-	JTextArea title = new JTextArea("Enter your text: ");
-	JTextArea text;
-	JPanel textPanel = new JPanel(new FlowLayout());
+	private JTextArea title = new JTextArea("Enter your text: ");
+	private JTextArea text;
+	private JPanel textPanel = new JPanel(new FlowLayout());
 
-	JTextArea size = new JTextArea("Size ");
-	String[] sizeStrings = {"Small","Medium","Large"};
-	JComboBox<String> sizeChoice = new JComboBox<String>(sizeStrings);
-	JPanel sizePanel = new JPanel(new FlowLayout());
+	private JTextArea size = new JTextArea("Size ");
+	private String[] sizeStrings = {"Small","Medium","Large"};
+	private JComboBox<String> sizeChoice = new JComboBox<String>(sizeStrings);
+	private JPanel sizePanel = new JPanel(new FlowLayout());
 
-	JTextArea font = new JTextArea("Font ");
-	String[] fontStrings = {"Font 1","Font 2","Font 3","Font 4","Font 5"};
-	JComboBox<String> fontChoice = new JComboBox<String>(fontStrings);
-	JPanel fontPanel = new JPanel(new FlowLayout());
+	private JTextArea font = new JTextArea("Font ");
+	private String[] fontStrings = {"Font 1","Font 2","Font 3","Font 4","Font 5"};
+	private JComboBox<String> fontChoice = new JComboBox<String>(fontStrings);
+	private JPanel fontPanel = new JPanel(new FlowLayout());
 
-	JTextArea colour = new JTextArea("Colour ");
-	String[] colourStrings = {"White","Blue","Black","Purple","Red"};
-	JComboBox<String> colourChoice = new JComboBox<String>(colourStrings);
-	JPanel colourPanel = new JPanel(new FlowLayout());
+	private JTextArea colour = new JTextArea("Colour ");
+	private String[] colourStrings = {"White","Blue","Black","Purple","Red"};
+	private JComboBox<String> colourChoice = new JComboBox<String>(colourStrings);
+	private JPanel colourPanel = new JPanel(new FlowLayout());
 
-	JTextArea position = new JTextArea("Position ");
-	String[] vertical = {"Top","Centre","Bottom"};
-	JComboBox<String> positionChoiceVertical = new JComboBox<String>(vertical); // Always centred horizontally
-	JPanel posPanel = new JPanel(new FlowLayout());
+	private JTextArea position = new JTextArea("Position ");
+	private String[] vertical = {"Top","Centre","Bottom"};
+	private JComboBox<String> positionChoiceVertical = new JComboBox<String>(vertical); // Always centred horizontally
+	private JPanel posPanel = new JPanel(new FlowLayout());
 
-	JTextArea duration = new JTextArea("Duration (seconds) ");  // Limit of 10
-	Integer[] durationStrings = {1,2,3,4,5,6,7,8,9,10};
-	JComboBox<Integer> durationChoice = new JComboBox<Integer>(durationStrings);
-	JPanel durPanel = new JPanel(new FlowLayout());
+	private JTextArea duration = new JTextArea("Duration (seconds) ");  // Limit of 10
+	private Integer[] durationStrings = {1,2,3,4,5,6,7,8,9,10};
+	private JComboBox<Integer> durationChoice = new JComboBox<Integer>(durationStrings);
+	private JPanel durPanel = new JPanel(new FlowLayout());
 
-	JButton enter = new JButton("Enter");
-	JButton preview = new JButton("Preview");
-	JPanel buttons = new JPanel(new FlowLayout());
-	JPanel please = new JPanel(new BorderLayout());
+	private JButton enter = new JButton("Enter");
+	private JButton preview = new JButton("Preview");
+	private JPanel buttons = new JPanel(new FlowLayout());
 
 	private final EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 	private final EmbeddedMediaPlayer previewArea = mediaPlayerComponent.getMediaPlayer();   // Maybe have a video player that will play for their chosen duration
 
-	JPanel panelCont = new JPanel(new GridLayout(0,1));
+	private JPanel panelCont = new JPanel();
 
-	String videoLocation;
-	String saveLocation;
-	Boolean _isTitle;
-	Boolean _isEdit;
+	private String videoLocation;
+	private String saveLocation;
+	private Boolean _isTitle;
+	private Boolean _isEdit;
 
 	public TitleAndCreditAdder(boolean isTitle, boolean edit, String original, String editText, String name) { // TODO check input is video?
 		_isTitle = isTitle;
@@ -102,6 +104,11 @@ public class TitleAndCreditAdder {
 			text = new JTextArea(1,10);
 		}
 
+		panelCont.setLayout(new BoxLayout(panelCont,BoxLayout.Y_AXIS));
+		panelCont.add(Box.createVerticalGlue());
+		
+		
+		
 		if (_isEdit == false) {
 			JFileChooser fc = new JFileChooser();
 			int result = fc.showOpenDialog(null);
