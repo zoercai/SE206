@@ -56,7 +56,7 @@ public class EditTitleOrCredit {
 						new TitleAndCreditAdder(false, true,details[0],text,details[2]);
 					}
 				} else {
-					writer.write(input);
+					writer.write(input + "\n");
 				}
 				input = textReader.readLine();
 			}
