@@ -15,6 +15,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -73,14 +74,10 @@ public class ProjectGUI{
 	private JMenuItem overlay = new JMenuItem("Overlay Audio");
 	private JMenuItem menuMute = new JMenuItem("Mute");
 
-	private JMenu view = new JMenu("View");
-	private JMenuItem fullscreen = new JMenuItem("Full Screen");
-
 	private JMenu sub = new JMenu("Subtitle");
-	private JMenuItem add = new JMenuItem("Add Subtitle"); //TODO -> Get rid of these (not needed for assignment)
-	private JMenuItem edit = new JMenuItem("Edit Subtitle");
 	private JMenuItem title = new JMenuItem("Create Title Page");
 	private JMenuItem credit = new JMenuItem("Create Credit Page");
+	private JMenuItem editT = new JMenuItem("Edit Title or Credit Page");
 
 	private JMenu help = new JMenu("Help");
 	private JMenuItem f1 = new JMenuItem("Help...");
@@ -101,6 +98,7 @@ public class ProjectGUI{
 	boolean goforward = false;
 	boolean endofvideo = false;
 	boolean gobackward = false;
+	private JSlider volume = new JSlider(0,150,0);
 
 	String videoLocation = "";
 	String saveLocation = "";
@@ -144,14 +142,10 @@ public class ProjectGUI{
 		audio.add(overlay);
 		audio.add(menuMute);
 
-		menu.add(view);
-		view.add(fullscreen);
-
 		menu.add(sub);
-		sub.add(add);
-		sub.add(edit);
 		sub.add(title);
 		sub.add(credit);
+		sub.add(editT);
 
 		menu.add(help);
 		help.add(f1);
@@ -162,6 +156,7 @@ public class ProjectGUI{
 		dock.add(mute);
 		dock.add(back);
 		dock.add(forward);
+		dock.add(volume);
 
 		main.add(mediaPlayerComponent, BorderLayout.CENTER);
 
@@ -171,6 +166,8 @@ public class ProjectGUI{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
+		checkForLog();
+		
 		browse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -234,29 +231,27 @@ public class ProjectGUI{
 
 		back.addActionListener(new rewindListener());
 		menuBackward.addActionListener(new rewindListener());
-
-		fullscreen.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				video.toggleFullScreen();
-				boolean h = video.isFullScreen();
-
-				System.out.println(h);
-			}
-		});
 		
 		title.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				new TitleAndCreditAdder(true);
+				new TitleAndCreditAdder(true,false,null,null,null);
 			}
 		});
 		
 		credit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new TitleAndCreditAdder(false);
+				new TitleAndCreditAdder(false,false,null,null,null);
+			}
+		});
+		
+		editT.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				video.stop();
+				new EditTitleOrCredit();
 			}
 		});
 	}
@@ -388,5 +383,15 @@ public class ProjectGUI{
 		}
 	}
 
-
+	private void checkForLog() {
+		try {
+			String homeDir = System.getProperty("user.home");
+			String logname = homeDir + "/VAMIXlog.txt";
+			File log = new File(logname);
+			if (!log.exists()) {
+				log.createNewFile();
+			}
+		} catch (Exception e) {
+		}
+	}
 }

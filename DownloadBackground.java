@@ -16,7 +16,7 @@ import javax.swing.PopupFactory;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 
-import testing.ProgressMonitorDemo;
+//import testing.ProgressMonitorDemo;
 
 public class DownloadBackground extends SwingWorker<Integer, Integer> {
 
