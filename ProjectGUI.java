@@ -17,8 +17,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -90,6 +93,7 @@ public class ProjectGUI {
 	private JButton mute = new JButton("Mute");
 	private JButton forward = new JButton("Forward");
 	private JButton back = new JButton("Rewind");
+	private JSlider volume = new JSlider(0,150,0);
 
 	boolean paused = false;
 	boolean goforward = false;
@@ -138,6 +142,7 @@ public class ProjectGUI {
 		dock.add(mute);
 		dock.add(back);
 		dock.add(forward);
+		dock.add(volume);
 
 		main.add(mediaPlayerComponent, BorderLayout.CENTER);
 
@@ -327,12 +332,23 @@ public class ProjectGUI {
 				new TitleAndCreditAdder(false,false,null,null,null);
 			}
 		});
-		
+
 		editT.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				video.stop();
 				new EditTitleOrCredit();
+			}
+		});
+
+		volume.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				// TODO Auto-generated method stub
+				int value = volume.getValue();
+				System.out.println(value);
+				// TODO Set volume to that level
+				video.setVolume(value);
 			}
 		});
 	}
