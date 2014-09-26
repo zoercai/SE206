@@ -204,7 +204,7 @@ public class OverlayAudio {
 			} else { // file doesn't exist
 				// avconv it
 				String avconvCmd = "avconv -i "+inputVideoFile+" -i "+inputAudioFile+" -filter_complex amix=inputs=2 -crf 18 "+outputFile;
-				System.out.println(avconvCmd);
+				//System.out.println(avconvCmd);
 				ProcessBuilder avconvBuilder = new ProcessBuilder("bash", "-c",
 						avconvCmd);
 				avconvBuilder.redirectErrorStream(true);

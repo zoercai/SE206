@@ -238,7 +238,7 @@ public class Download {
 				// file doesn't exist, download
 				String dwnCmd = "wget " + " --progress=dot " + url + " -O "
 						+ outputFile;
-				System.out.println(dwnCmd);
+				//System.out.println(dwnCmd);
 				ProcessBuilder downloadBuilder = new ProcessBuilder("bash",
 						"-c", dwnCmd);
 				downloadBuilder.redirectErrorStream(true);
