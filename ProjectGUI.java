@@ -28,27 +28,14 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 public class ProjectGUI{
 
 	/*
-	 * TODO AKNOWLEDGE CODE FROM THE LETURE (AND HENCE THAT SITE) THE FILE
-	 * VIEWER. File Viewer =
-	 * http://docs.oracle.com/javase/tutorial/uiswing/components
-	 * /filechooser.html
+	 * Media Player/Trailer Editor
 	 * 
-	 * create title page(s) and credit page(s) for the video.
+	 * Ruoyi Cai (rcai861)
+	 * Genevieve Taka (gtak640)
 	 * 
-	 * 
-	 * Subtitle -Add subtitle -Create Title Page -Create Credit Page -Edit
-	 * Subtitle -> Click on subtitle while playing so it pauses and editing can
-	 * be done
-	 * 
-	 * 
-	 * Need to make the transition between fast forward and rewind more seamless
-	 * if play is not first used to stop it.
-	 * 
-	 * Subtitle class - Don't do it in here :)
-	 * 
-	 * avconv -i TetrisGod.mp4 -strict experimental -vf
-	 * "drawtext=fontcolor=white:fontsize=30:fontfile=/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-L.ttf:text='Hi Zoe':x=30:y=h-text_h-30"
-	 * -crf 18 test.mp4
+	 * References:
+	 * Basic GUI code from Nasser's lecture.
+	 * http://www.java2s.com/Tutorial/Java/0240__Swing/ASimpleModalDialog.htm for positioning of dialog over parent frame.
 	 */
 
 	private final EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
