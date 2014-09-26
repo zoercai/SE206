@@ -119,7 +119,6 @@ public class ReplaceAudio {
 				fileSaver.showDialog(null, "Name output video file");
 				outputFile = fileSaver.getSelectedFile();
 				outputField.setText(outputFile.toString());
-				// TODO if user changes text, update variable.
 			}
 		});
 
@@ -127,16 +126,14 @@ public class ReplaceAudio {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if ((sourceVideoFile != null) && (sourceAudioFile != null)
-						&& (outputFile != null)) {
-					if (!outputFile.getName().endsWith(".avi")) {
-						outputFile = new File(outputFile.getAbsoluteFile()
-								+ ".avi");
+				if ((inputVideoField.getText() != null) && (inputAudioField.getText() != null)
+						&& (outputField.getText() != null)) {
+					if (!outputField.getText().endsWith(".avi")) {
+						outputField.setText(outputField.getText()+".avi");
 					}
 					replaceBackground replace = new replaceBackground(
-							sourceVideoFile.getAbsolutePath(), sourceAudioFile
-									.getAbsolutePath(), outputFile
-									.getAbsolutePath());
+							inputVideoField.getText(), inputAudioField.getText()
+									, outputField.getText());
 					replace.execute();
 				} else {
 					JOptionPane
@@ -208,10 +205,7 @@ public class ReplaceAudio {
 
 			} else { // file doesn't exist
 				// avconv it
-				String avconvCmd = "avconv -i " + inputVideoFile + " -i "
-						+ inputAudioFile
-						+ " -map 0:v -map 1:a -vcodec copy -acodec copy "
-						+ outputFile;
+				String avconvCmd = "avconv -i "+inputVideoFile+" -i "+inputAudioFile+" -map 0:v -map 1:a -vcodec copy -acodec copy "+outputFile;
 				ProcessBuilder avconvBuilder = new ProcessBuilder("bash", "-c",
 						avconvCmd);
 				avconvBuilder.redirectErrorStream(true);
