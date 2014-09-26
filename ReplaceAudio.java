@@ -206,6 +206,7 @@ public class ReplaceAudio {
 			} else { // file doesn't exist
 				// avconv it
 				String avconvCmd = "avconv -i "+inputVideoFile+" -i "+inputAudioFile+" -map 0:v -map 1:a -vcodec copy -acodec copy "+outputFile;
+				//System.out.println(avconvCmd);
 				ProcessBuilder avconvBuilder = new ProcessBuilder("bash", "-c",
 						avconvCmd);
 				avconvBuilder.redirectErrorStream(true);
