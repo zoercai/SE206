@@ -53,11 +53,10 @@ public class Download {
 	private JLabel openSourceLabel = new JLabel("Open Source?");
 	private JCheckBox openSourceCheck = new JCheckBox();
 	
-	
-	
 	public Download(JFrame parent){
 		this.parent = parent;
 		
+		//Sets the position of the new window
 		if (parent != null) {
 			Dimension parentSize = parent.getSize();
 			Point p = parent.getLocation();
@@ -92,6 +91,7 @@ public class Download {
 		downloadMain.pack();
 		downloadMain.setVisible(true);
 		
+		// Allows user to specify location and name of the output file
 		outputSelectButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -114,6 +114,7 @@ public class Download {
 			}
 		});
 		
+		// download button, activates the DownloadBackground process
 		downloadButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -183,10 +184,10 @@ public class Download {
 							publish(percent.get());
 						}
 					}
-
-					if (!isCancelled()) {
+					if (!isCancelled()) {  		//while not cancelled, keep the process going
 						status = ovrProcess.waitFor();
 					}
+					//if exit value isn't 0, show error.
 					if (ovrProcess.exitValue() != 0) {
 						JOptionPane
 								.showMessageDialog(null,

@@ -53,6 +53,7 @@ public class ReplaceAudio {
 	public ReplaceAudio(JFrame parent) {
 		this.parent = parent;
 
+		//Sets the position of the new window
 		if (parent != null) {
 			Dimension parentSize = parent.getSize();
 			Point p = parent.getLocation();
@@ -91,6 +92,7 @@ public class ReplaceAudio {
 		stripMain.pack();
 		stripMain.setVisible(true);
 
+		// Allows user to choose input files
 		inputVideoSelectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -111,6 +113,7 @@ public class ReplaceAudio {
 			}
 		});
 
+		// Allows user to specify location and name of the output file
 		outputSelectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -122,6 +125,7 @@ public class ReplaceAudio {
 			}
 		});
 
+		//button activates the replaceBackground process
 		extractButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -192,8 +196,6 @@ public class ReplaceAudio {
 					}
 					if (avconvProcess.exitValue() != 0) {
 						this.cancel(true);
-					} else {
-						// checkLog("EXTRACT");
 					}
 				} else {
 					this.cancel(true);
@@ -206,7 +208,6 @@ public class ReplaceAudio {
 			} else { // file doesn't exist
 				// avconv it
 				String avconvCmd = "avconv -i "+inputVideoFile+" -i "+inputAudioFile+" -map 0:v -map 1:a -vcodec copy -acodec copy "+outputFile;
-				//System.out.println(avconvCmd);
 				ProcessBuilder avconvBuilder = new ProcessBuilder("bash", "-c",
 						avconvCmd);
 				avconvBuilder.redirectErrorStream(true);
@@ -221,8 +222,6 @@ public class ReplaceAudio {
 							.showMessageDialog(
 									null,
 									"Error! Replace was not successful. Please check output file name and make sure it contains the appropriate extension.");
-				} else {
-					// checkLog("EXTRACT");
 				}
 			}
 
@@ -238,8 +237,6 @@ public class ReplaceAudio {
 				JOptionPane.showMessageDialog(null, "Replace not completed.");
 				progressBar.setIndeterminate(false);
 			}
-			// progressBar.setValue(0);
-			// progressBar.setStringPainted(false);
 		}
 
 	}

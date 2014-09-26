@@ -47,6 +47,7 @@ public class StripAudio {
 	public StripAudio(JFrame parent){
 		this.parent = parent;
 		
+		//Sets the position of the new window
 		if (parent != null) {
 			Dimension parentSize = parent.getSize();
 			Point p = parent.getLocation();
@@ -79,6 +80,7 @@ public class StripAudio {
 		stripMain.pack();
 		stripMain.setVisible(true);
 		
+		// Allows user to choose input files
 		inputSelectButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -89,6 +91,7 @@ public class StripAudio {
 			}
 		});
 		
+		// Allows user to specify location and name of the output file
 		outputSelectButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -99,6 +102,7 @@ public class StripAudio {
 			}
 		});
 		
+		//button activates the stripBackground process
 		extractButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -130,8 +134,6 @@ public class StripAudio {
 		
 		@Override
 		protected Integer doInBackground() throws Exception {
-			//TODO give warning if no audio signal.
-			
 			String chkFileExistsCmd = "test -e " + outputFile;
 			ProcessBuilder checkFileBuilder = new ProcessBuilder("bash", "-c",
 					chkFileExistsCmd);
@@ -163,8 +165,6 @@ public class StripAudio {
 					}
 					if (avconvProcess.exitValue() != 0) {
 						this.cancel(true);
-					} else {
-						// checkLog("EXTRACT");
 					}
 				} else {
 					this.cancel(true);
@@ -191,8 +191,6 @@ public class StripAudio {
 							.showMessageDialog(
 									null,
 									"Error! Extraction was not successful. Please check output file name and make sure it contains the appropriate extension.");
-				} else {
-					// checkLog("EXTRACT");
 				}
 			}
 
@@ -208,8 +206,6 @@ public class StripAudio {
 				JOptionPane.showMessageDialog(null, "Extract not completed.");
 				progressBar.setIndeterminate(false);
 			}
-			// progressBar.setValue(0);
-			// progressBar.setStringPainted(false);
 		}
 
 		

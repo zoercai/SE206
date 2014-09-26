@@ -53,6 +53,7 @@ public class OverlayAudio {
 	public OverlayAudio(JFrame parent) {
 		this.parent = parent;
 
+		//Sets the position of the new window
 		if (parent != null) {
 			Dimension parentSize = parent.getSize();
 			Point p = parent.getLocation();
@@ -91,6 +92,7 @@ public class OverlayAudio {
 		stripMain.pack();
 		stripMain.setVisible(true);
 
+		// Allows user to choose input files
 		inputVideoSelectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -111,6 +113,8 @@ public class OverlayAudio {
 			}
 		});
 
+		
+		// Allows user to specify location and name of the output file
 		outputSelectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -122,10 +126,10 @@ public class OverlayAudio {
 			}
 		});
 
+		//button activates the replaceBackground process.
 		overlayButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				if ((inputVideoField.getText() != null) && (inputAudioField.getText() != null)
 						&& (outputField.getText() != null)) {
 					if (!outputField.getText().endsWith(".avi")) {
@@ -188,8 +192,6 @@ public class OverlayAudio {
 					}
 					if (avconvProcess.exitValue() != 0) {
 						this.cancel(true);
-					} else {
-						// checkLog("EXTRACT");
 					}
 				} else {
 					this.cancel(true);
@@ -217,8 +219,6 @@ public class OverlayAudio {
 							.showMessageDialog(
 									null,
 									"Error! Overlay was not successful. Please check output file name and make sure it contains the appropriate extension.");
-				} else {
-					// checkLog("EXTRACT");
 				}
 			}
 
@@ -234,8 +234,6 @@ public class OverlayAudio {
 				JOptionPane.showMessageDialog(null, "Overlay not completed.");
 				progressBar.setIndeterminate(false);
 			}
-			// progressBar.setValue(0);
-			// progressBar.setStringPainted(false);
 		}
 	}
 }

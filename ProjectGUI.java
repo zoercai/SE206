@@ -55,7 +55,6 @@ public class ProjectGUI{
 	private final EmbeddedMediaPlayer video = mediaPlayerComponent.getMediaPlayer();
 
 	JPanel main = new JPanel(new BorderLayout());
-	//private JPanel menuPanel = new JPanel();
 	private JMenuBar menu = new JMenuBar();
 	private JPanel bottom = new JPanel(new BorderLayout());
 	private JPanel dock = new JPanel(new FlowLayout());
@@ -109,19 +108,14 @@ public class ProjectGUI{
 	private ProjectGUI(String[] args) {
 		final JFrame frame = new JFrame("Lysandros Media Player");
 		
-		//menuPanel.add(menu);
 		main.add(menu, BorderLayout.NORTH);
 		main.add(bottom, BorderLayout.SOUTH);
 		
-		//timeCount.setEditable(false);
-		//timeCount.setColumns(4);
 		timeCount.setHorizontalAlignment(JTextField.CENTER);
 		timePanel.add(timeCount);
 		
 		timePanel.add(timeBar);
 		
-		//timeTotal.setEditable(false);
-		//timeTotal.setColumns(4);
 		timeTotal.setHorizontalAlignment(JTextField.CENTER);
 		timePanel.add(timeTotal);
 		
@@ -170,6 +164,7 @@ public class ProjectGUI{
 		frame.setVisible(true);
 
 		checkForLog();
+		
 		
 		browse.addActionListener(new ActionListener() {
 			@Override
@@ -238,7 +233,6 @@ public class ProjectGUI{
 		title.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				new TitleAndCreditAdder(true,false,null,null,null);
 			}
 		});
