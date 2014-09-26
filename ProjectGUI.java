@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -50,6 +51,7 @@ public class ProjectGUI{
 	private final EmbeddedMediaPlayer video = mediaPlayerComponent.getMediaPlayer();
 
 	JPanel main = new JPanel(new BorderLayout());
+	//private JPanel menuPanel = new JPanel();
 	private JMenuBar menu = new JMenuBar();
 	private JPanel bottom = new JPanel(new BorderLayout());
 	private JPanel dock = new JPanel(new FlowLayout());
@@ -84,10 +86,10 @@ public class ProjectGUI{
 	private JMenuItem f1 = new JMenuItem("Help...");
 	private JMenuItem about = new JMenuItem("About");
 
-	private JPanel timePanel = new JPanel(new FlowLayout());
+	private JPanel timePanel = new JPanel();
 	private JProgressBar timeBar = new JProgressBar();
-	private JTextField timeCount = new JTextField(" --:-- ");
-	private JTextField timeTotal = new JTextField(" --:-- ");
+	private JLabel timeCount = new JLabel(" --:-- ");
+	private JLabel timeTotal = new JLabel(" --:-- ");
 
 	private JButton play = new JButton("Play");
 	private JButton stop = new JButton("Stop");
@@ -105,18 +107,23 @@ public class ProjectGUI{
 
 	private ProjectGUI(String[] args) {
 		final JFrame frame = new JFrame("Lysandros Media Player");
-
+		
+		//menuPanel.add(menu);
 		main.add(menu, BorderLayout.NORTH);
 		main.add(bottom, BorderLayout.SOUTH);
-		timePanel.add(timeCount);
-		timePanel.add(timeBar);
-		timeCount.setEditable(false);
-		timeCount.setColumns(4);
+		
+		//timeCount.setEditable(false);
+		//timeCount.setColumns(4);
 		timeCount.setHorizontalAlignment(JTextField.CENTER);
-		timeTotal.setEditable(false);
-		timeTotal.setColumns(4);
+		timePanel.add(timeCount);
+		
+		timePanel.add(timeBar);
+		
+		//timeTotal.setEditable(false);
+		//timeTotal.setColumns(4);
 		timeTotal.setHorizontalAlignment(JTextField.CENTER);
 		timePanel.add(timeTotal);
+		
 		bottom.add(timePanel,BorderLayout.NORTH);
 		bottom.add(dock, BorderLayout.SOUTH);
 
@@ -172,7 +179,6 @@ public class ProjectGUI{
 				File file = fc.getSelectedFile();
 				videoLocation = file.getAbsolutePath();
 				VideoPlayer video = new VideoPlayer();
-				
 				video.execute();
 			}
 		});
@@ -292,13 +298,10 @@ public class ProjectGUI{
 
 		@Override
 		protected void process(List<Integer> chunks) {
-			
-		
 				timeBar.setValue(chunks.get(chunks.size()-1));
 				if (!timeCount.getText().equals(String.format("%02d:%02d", (int)chunks.get(chunks.size()-1)/60000, (int)(chunks.get(chunks.size()-1))%60000/1000))){
 					timeCount.setText(String.format("%02d:%02d", (int)chunks.get(chunks.size()-1)/60000, (int)(chunks.get(chunks.size()-1))%60000/1000));
 				}
-			
 		}
 
 		@Override

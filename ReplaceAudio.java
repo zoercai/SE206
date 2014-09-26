@@ -20,8 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import mediaPlayer.StripAudio.stripBackground;
-
 public class ReplaceAudio {
 	private JFrame parent;
 	private File sourceVideoFile;
