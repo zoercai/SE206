@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JOptionPane;
@@ -38,33 +39,32 @@ public class TitleAndCreditAdder {
 
 
 	private JFrame frame = new JFrame("Add Title Scene");
-	private JFrame goop = new JFrame("Pop-up");
 
-	private JTextArea title = new JTextArea("Enter your text: ");
+	private JLabel title = new JLabel("Enter your text: ");
 	private JTextArea text;
 	private JPanel textPanel = new JPanel(new FlowLayout());
 
-	private JTextArea size = new JTextArea("Size ");
+	private JLabel size = new JLabel("Size ");
 	private String[] sizeStrings = {"Small","Medium","Large"};
 	private JComboBox<String> sizeChoice = new JComboBox<String>(sizeStrings);
 	private JPanel sizePanel = new JPanel(new FlowLayout());
 
-	private JTextArea font = new JTextArea("Font ");
+	private JLabel font = new JLabel("Font ");
 	private String[] fontStrings = {"Font 1","Font 2","Font 3","Font 4","Font 5"};
 	private JComboBox<String> fontChoice = new JComboBox<String>(fontStrings);
 	private JPanel fontPanel = new JPanel(new FlowLayout());
 
-	private JTextArea colour = new JTextArea("Colour ");
+	private JLabel colour = new JLabel("Colour ");
 	private String[] colourStrings = {"White","Blue","Black","Purple","Red"};
 	private JComboBox<String> colourChoice = new JComboBox<String>(colourStrings);
 	private JPanel colourPanel = new JPanel(new FlowLayout());
 
-	private JTextArea position = new JTextArea("Position ");
+	private JLabel position = new JLabel("Position ");
 	private String[] vertical = {"Top","Centre","Bottom"};
 	private JComboBox<String> positionChoiceVertical = new JComboBox<String>(vertical); // Always centred horizontally
 	private JPanel posPanel = new JPanel(new FlowLayout());
 
-	private JTextArea duration = new JTextArea("Duration (seconds) ");  // Limit of 10
+	private JLabel duration = new JLabel("Duration (seconds) ");  // Limit of 10
 	private Integer[] durationStrings = {1,2,3,4,5,6,7,8,9,10};
 	private JComboBox<Integer> durationChoice = new JComboBox<Integer>(durationStrings);
 	private JPanel durPanel = new JPanel(new FlowLayout());
@@ -109,6 +109,7 @@ public class TitleAndCreditAdder {
 		
 		
 		
+		
 		if (_isEdit == false) {
 			JFileChooser fc = new JFileChooser();
 			int result = fc.showOpenDialog(null);
@@ -132,27 +133,21 @@ public class TitleAndCreditAdder {
 
 		textPanel.add(title);
 		textPanel.add(text); 
-		title.setEditable(false);
 
 		sizePanel.add(size);
 		sizePanel.add(sizeChoice);
-		size.setEditable(false);
 
 		fontPanel.add(font);
 		fontPanel.add(fontChoice);
-		font.setEditable(false);
 
 		colourPanel.add(colour);
 		colourPanel.add(colourChoice);
-		colour.setEditable(false);
 
 		posPanel.add(position);
 		posPanel.add(positionChoiceVertical);
-		position.setEditable(false);
 
 		durPanel.add(duration);
 		durPanel.add(durationChoice);
-		duration.setEditable(false);
 		buttons.add(preview);
 		buttons.add(enter);
 
