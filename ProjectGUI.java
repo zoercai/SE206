@@ -19,6 +19,9 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
@@ -98,7 +101,7 @@ public class ProjectGUI{
 	boolean goforward = false;
 	boolean endofvideo = false;
 	boolean gobackward = false;
-	private JSlider volume = new JSlider(0,150,0);
+	private JSlider volume = new JSlider(0,150,50);
 
 	String videoLocation = "";
 	String saveLocation = "";
@@ -252,6 +255,16 @@ public class ProjectGUI{
 			public void actionPerformed(ActionEvent arg0) {
 				video.stop();
 				new EditTitleOrCredit();
+			}
+		});
+		
+		volume.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				// TODO Auto-generated method stub
+				int value = volume.getValue();
+				video.setVolume(value);
 			}
 		});
 	}
