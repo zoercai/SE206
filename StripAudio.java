@@ -96,7 +96,6 @@ public class StripAudio {
 				fileSaver.showDialog(null, "Name output audio file");
 				outputFile = fileSaver.getSelectedFile();
 				outputField.setText(outputFile.toString());
-				//TODO if user changes text, update variable.
 			}
 		});
 		
@@ -104,12 +103,12 @@ public class StripAudio {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				if ((sourceFile!=null) && (outputFile!=null)){
-					if(!outputFile.getName().endsWith(".mp3"))
+				if ((inputField.getText()!=null) && (outputFile!=null)){
+					if(!outputField.getText().endsWith(".mp3"))
 					{
-						outputFile = new File(outputFile.getAbsoluteFile() + ".mp3");
+						outputField.setText(outputField.getText()+".mp3");
 					}
-					stripBackground extract = new stripBackground(sourceFile.getAbsolutePath(),outputFile.getAbsolutePath());
+					stripBackground extract = new stripBackground(inputField.getText(),outputField.getText());
 					extract.execute();		
 				}else{
 					JOptionPane.showMessageDialog(null, "File not extracted. Please specify both files correctly!");
@@ -131,7 +130,6 @@ public class StripAudio {
 		
 		@Override
 		protected Integer doInBackground() throws Exception {
-			//TODO have a progress bar for extract in a dialog that can be minimized.
 			//TODO give warning if no audio signal.
 			
 			String chkFileExistsCmd = "test -e " + outputFile;
