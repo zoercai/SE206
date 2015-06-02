@@ -1,5 +1,7 @@
-SE206
+SE206 Assignment 2
 =====
+
+Compatible Operating System: Ubuntu
 
 To run this program there are vlcj Libraries that must be referenced by the programme. These can be found at http://www.capricasoftware.co.uk/ in the downloads section. Once these libraries are installed the programme should run correctly.
 When the program is running it opens on a media player which has a menu bar at the top, a dock containing buttons at the bottom and a blank screen in the middle.
